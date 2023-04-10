@@ -1,3 +1,10 @@
+import { Fragment } from 'react';
+
+// This Outlet we can see as a outlet where the code that we wanna render should come out from
+// Outlet allows us to leverage this pattern matching in this nesting structure in order to dynamically
+// change portions of our code based on the routes and the nested routes
+import { Outlet } from 'react-router-dom';
+
 import Directory from '../../components/directory/directory.component';
 
 const Home = () => {
@@ -29,7 +36,12 @@ const Home = () => {
     },
   ];
 
-  return <Directory categories={categories} />;
+  return (
+    <Fragment>
+      <Directory categories={categories} />
+      <Outlet />
+    </Fragment>
+  );
 };
 
 export default Home;
