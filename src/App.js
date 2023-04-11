@@ -1,18 +1,9 @@
-import { Fragment } from 'react';
-import { Routes, Route, Outlet } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Home from './routes/home/home.component';
+import Navigation from './routes/navigation/navigation.component';
 
 const Shop = () => {
   return <h1>I am the shop page</h1>;
-};
-
-const Navigation = () => {
-  return (
-    <Fragment>
-      <h1>I am the navbar</h1>
-      <Outlet />
-    </Fragment>
-  );
 };
 
 const App = () => {
@@ -23,11 +14,6 @@ const App = () => {
 
   return (
     <Routes>
-      <Route path='/' element={<Home />}>
-        <Route index element={<Shop />} />
-        <Route path='home' element={<Home />} />
-      </Route>
-
       <Route path='/' element={<Navigation />}>
         <Route index element={<Home />} />
         <Route path='shop' element={<Shop />} />
