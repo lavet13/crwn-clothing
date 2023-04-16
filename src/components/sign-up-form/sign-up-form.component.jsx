@@ -1,5 +1,10 @@
 import { useState } from 'react';
 
+import './sign-up-form.styles.scss';
+
+import FormInput from '../form-input/form-input.component';
+import Button from '../button/button.component';
+
 import {
   createAuthUserWithEmailAndPassword,
   createUserDocumentFromAuth,
@@ -13,7 +18,6 @@ const defaultFormFields = {
 };
 
 const SignUpForm = () => {
-  const [error, setError] = useState(null);
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { displayName, email, password, confirmPassword } = formFields;
 
@@ -23,82 +27,90 @@ const SignUpForm = () => {
     setFormFields({ ...formFields, [name]: value });
   };
 
+  console.log(formFields);
+
+  const resetFormFields = () => setFormFields(defaultFormFields);
+
   const handleSubmit = async event => {
     event.preventDefault();
 
     // confirm that the password matches confirmPassword
-    if (!(password === confirmPassword)) return;
+    if (password !== confirmPassword) {
+      alert('passwords do not match');
+      return;
+    }
 
-    // authenticate that user with email and password
     try {
+      // authenticate that user with email and password
       const { user } = await createAuthUserWithEmailAndPassword(
         email,
         password
       );
-      user.displayName = displayName;
-      console.log(user);
 
       // create a user doc from what we got authenticated
-      const userDocRef = await createUserDocumentFromAuth(user);
-      console.log(userDocRef);
+      const userDocRef = await createUserDocumentFromAuth(user, {
+        displayName,
+      });
 
-      setFormFields(defaultFormFields);
-      setError(null);
+      // clear fields
+      resetFormFields();
     } catch (error) {
-      const message = error.message;
-      console.log(message);
-      setError({ message });
+      if (error.code === 'auth/email-already-in-use') {
+        alert('Cannot create user, email already in use');
+      } else {
+        console.log('User creation encountered an error', error);
+      }
     }
   };
 
   return (
-    <div>
-      <h1>Sign up with your email and password</h1>
+    <div className='sign-up-container'>
+      <h2>Don't have an account?</h2>
+      <span>Sign up with your email and password</span>
 
       <form onSubmit={handleSubmit}>
-        <label htmlFor='displayName'>Display Name</label>
-        <input
+        <FormInput
+          label='Display Name'
           type='text'
-          id='displayName'
           required
           onChange={handleChange}
           name='displayName'
           value={displayName}
         />
 
-        <label htmlFor='email'>Email</label>
-        <input
+        <FormInput
+          label='Email'
           type='email'
-          id='email'
           required
           onChange={handleChange}
           name='email'
           value={email}
         />
 
-        <label htmlFor='password'>Password</label>
-        <input
+        <FormInput
+          label='Password'
           type='password'
-          id='password'
           required
           onChange={handleChange}
           name='password'
           value={password}
+          minLength='6'
         />
 
-        <label htmlFor='confirm-password'>Confirm password</label>
-        <input
+        <FormInput
+          label='Confirm Password'
           type='password'
-          id='confirm-password'
           required
           onChange={handleChange}
           name='confirmPassword'
           value={confirmPassword}
+          minLength='6'
         />
 
-        <button type='submit'>Sign Up</button>
+        <Button buttonType='inverted' type='submit'>
+          Sign Up
+        </Button>
       </form>
-      {error && <p>{error.message}</p>}
     </div>
   );
 };
