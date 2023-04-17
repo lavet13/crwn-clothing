@@ -46,7 +46,7 @@ const SignUpForm = () => {
       );
 
       // create a user doc from what we got authenticated
-      const userDocRef = await createUserDocumentFromAuth(user, {
+      await createUserDocumentFromAuth(user, {
         displayName,
       });
 

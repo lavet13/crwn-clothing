@@ -1,9 +1,23 @@
 .sign-in-container {
+  align-self: flex-start;
   display: flex;
   flex-direction: column;
-  width: 380px;
+  width: 480px;
+  margin: 0 auto;
 
   h2 {
     margin: 10px 0;
+  }
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: space-between;
+  column-gap: 10px;
+
+  @media only screen and (max-width: 32.5em) {
+    flex-direction: column;
+    row-gap: 15px;
+    justify-content: stretch;
   }
 }
