@@ -5,6 +5,7 @@ import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  onAuthStateChanged,
 } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
@@ -82,4 +83,9 @@ export const getDataFromUserDocument = async userAuth => {
   const userSnapshot = await getDoc(userDocRef);
 
   if (userSnapshot.exists()) return userSnapshot.data();
+};
+
+export const userAuthStateChanged = handleStateChange => {
+  if (!handleStateChange) return;
+  onAuthStateChanged(auth, handleStateChange);
 };
