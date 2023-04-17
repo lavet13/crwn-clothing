@@ -27,8 +27,6 @@ const SignUpForm = () => {
     setFormFields({ ...formFields, [name]: value });
   };
 
-  console.log(formFields);
-
   const resetFormFields = () => setFormFields(defaultFormFields);
 
   const handleSubmit = async event => {
@@ -48,7 +46,7 @@ const SignUpForm = () => {
       );
 
       // create a user doc from what we got authenticated
-      const userDocRef = await createUserDocumentFromAuth(user, {
+      await createUserDocumentFromAuth(user, {
         displayName,
       });
 
@@ -107,9 +105,7 @@ const SignUpForm = () => {
           minLength='6'
         />
 
-        <Button buttonType='inverted' type='submit'>
-          Sign Up
-        </Button>
+        <Button type='submit'>Sign Up</Button>
       </form>
     </div>
   );
