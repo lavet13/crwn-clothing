@@ -1,14 +1,12 @@
 import { Fragment, useContext } from 'react';
+import { Outlet, Link } from 'react-router-dom';
+
+import CartIcon from '../../components/cart-icon/cart-icon.component';
+import CartDropdown from '../../components/cart-dropdown/cart-dropdown.component';
 
 import { UserContext } from '../../contexts/user.context';
 
-// This Outlet we can see as a outlet where the code that we wanna render should come out from
-// Outlet allows us to leverage this pattern matching in this nesting structure in order to dynamically
-// change portions of our code based on the routes and the nested routes
-import { Outlet, Link } from 'react-router-dom';
-
 import { ReactComponent as CrwnLogo } from '../../assets/crown.svg';
-
 import { signOutUser } from '../../utils/firebase/firebase.utils';
 
 import './navigation.styles.scss';
@@ -35,7 +33,9 @@ const Navigation = () => {
               SIGN IN
             </Link>
           )}
+          <CartIcon />
         </div>
+        <CartDropdown />
       </div>
       <Outlet />
     </Fragment>
