@@ -1,11 +1,9 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 
 import './sign-in-form.styles.scss';
 
 import FormInput from '../form-input/form-input.component';
 import Button from '../button/button.component';
-
-import { UserContext } from '../../contexts/user.context';
 
 import {
   signInWithGooglePopup,
@@ -22,8 +20,6 @@ const SignInForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { email, password } = formFields;
 
-  const { setCurrentUser } = useContext(UserContext);
-
   const resetFormFields = () => setFormFields(defaultFormFields);
 
   const handleChange = event => {
@@ -34,15 +30,21 @@ const SignInForm = () => {
 
   const signInWithGoogle = async () => {
     try {
-      const { user } = await signInWithGooglePopup();
-      await createUserDocumentFromAuth(user);
+      await signInWithGooglePopup();
     } catch (error) {
-      if (error.code === 'auth/cancelled-popup-request') {
-        alert('Authentication with Google was canceled');
-      } else if (error.code === 'auth/popup-closed-by-user') {
-        alert('Authentication with Google was closed by user');
-      } else {
-        console.log(error.code);
+      switch (error.code) {
+        case 'auth/cancelled-popup-request':
+          alert('Authentication with Google was canceled');
+          break;
+        case 'auth/popup-closed-by-user':
+          alert('Authentication with Google was closed by user');
+          break;
+        case 'auth/popup-blocked':
+          alert('Blocked by Firebase');
+          break;
+
+        default:
+          console.log(error.code);
       }
     }
   };
@@ -51,12 +53,7 @@ const SignInForm = () => {
     event.preventDefault();
 
     try {
-      const { user } = await signInAuthUserWithEmailAndPassword(
-        email,
-        password
-      );
-
-      setCurrentUser(user);
+      await signInAuthUserWithEmailAndPassword(email, password);
 
       resetFormFields();
     } catch (error) {
@@ -67,8 +64,12 @@ const SignInForm = () => {
         case 'auth/user-not-found':
           alert('No user associated with this email');
           break;
+        case 'auth/network-request-failed':
+          alert('Blocked by Firebase');
+          break;
+
         default:
-          console.log(error);
+          console.log(error.code);
       }
     }
   };
