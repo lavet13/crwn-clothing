@@ -22,25 +22,31 @@ const SignInForm = () => {
 
   const resetFormFields = () => setFormFields(defaultFormFields);
 
-  const signInWithGoogle = async () => {
-    try {
-      const { user } = await signInWithGooglePopup();
-      await createUserDocumentFromAuth(user);
-    } catch (error) {
-      if (error.code === 'auth/cancelled-popup-request') {
-        alert('Authentication with Google was canceled');
-      } else if (error.code === 'auth/popup-closed-by-user') {
-        alert('Authentication with Google was closed by user');
-      } else {
-        console.log(error.code);
-      }
-    }
-  };
-
   const handleChange = event => {
     const { name, value } = event.target;
 
     setFormFields({ ...formFields, [name]: value });
+  };
+
+  const signInWithGoogle = async () => {
+    try {
+      await signInWithGooglePopup();
+    } catch (error) {
+      switch (error.code) {
+        case 'auth/cancelled-popup-request':
+          alert('Authentication with Google was canceled');
+          break;
+        case 'auth/popup-closed-by-user':
+          alert('Authentication with Google was closed by user');
+          break;
+        case 'auth/popup-blocked':
+          alert('Blocked by Firebase');
+          break;
+
+        default:
+          console.log(error.code);
+      }
+    }
   };
 
   const handleSubmit = async event => {
@@ -58,8 +64,12 @@ const SignInForm = () => {
         case 'auth/user-not-found':
           alert('No user associated with this email');
           break;
+        case 'auth/network-request-failed':
+          alert('Blocked by Firebase');
+          break;
+
         default:
-          console.log(error);
+          console.log(error.code);
       }
     }
   };
