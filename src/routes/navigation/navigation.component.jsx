@@ -14,7 +14,7 @@ import './navigation.styles.scss';
 
 const Navigation = () => {
   const { currentUser } = useContext(UserContext);
-  const { isCartOpen, toggleIsCartOpen, cartItems } = useContext(CartContext);
+  const { isCartOpen, toggleIsCartOpen, cartCount } = useContext(CartContext);
 
   return (
     <Fragment>
@@ -35,10 +35,7 @@ const Navigation = () => {
               SIGN IN
             </Link>
           )}
-          <CartIcon
-            onToggleCart={toggleIsCartOpen}
-            quantity={cartItems.length}
-          />
+          <CartIcon onToggleCart={toggleIsCartOpen} quantity={cartCount} />
         </div>
         {isCartOpen && <CartDropdown />}
       </div>
