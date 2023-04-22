@@ -18,7 +18,8 @@
       width: 23%;
 
       &:last-child {
-        width: 10%;
+        max-width: 10%;
+        text-align: center;
       }
     }
   }
