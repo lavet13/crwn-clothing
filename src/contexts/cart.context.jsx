@@ -37,12 +37,12 @@ const removeCartItem = (cartItems, cartItemToRemove) => {
 
 export const CartContext = createContext({
   isCartOpen: false,
-  toggleIsCartOpen: () => {},
+  setIsCartOpen: () => {},
   cartItems: [],
   addItemToCart: () => {},
-  cartCount: 0,
   deleteItemFromCart: () => {},
   removeItemFromCart: () => {},
+  cartCount: 0,
 });
 
 export const CartProvider = ({ children }) => {
@@ -59,28 +59,23 @@ export const CartProvider = ({ children }) => {
     setCartCount(newCartCount);
   }, [cartItems]);
 
-  const toggleIsCartOpen = () => setIsCartOpen(!isCartOpen);
-
-  const deleteItemFromCart = cartItemToDelete => {
+  const deleteItemFromCart = cartItemToDelete =>
     setCartItems(deleteCartItem(cartItems, cartItemToDelete));
-  };
 
-  const removeItemFromCart = cartItemToRemove => {
+  const removeItemFromCart = cartItemToRemove =>
     setCartItems(removeCartItem(cartItems, cartItemToRemove));
-  };
 
-  const addItemToCart = productToAdd => {
+  const addItemToCart = productToAdd =>
     setCartItems(addCartItem(cartItems, productToAdd));
-  };
 
   const value = {
     isCartOpen,
-    toggleIsCartOpen,
+    setIsCartOpen,
     cartItems,
     addItemToCart,
-    cartCount,
     deleteItemFromCart,
     removeItemFromCart,
+    cartCount,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
