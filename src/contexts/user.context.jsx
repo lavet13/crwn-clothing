@@ -14,8 +14,6 @@ export const UserContext = createContext({
 // this provider is essentially allowing any of it's child components to access the values inside useState
 export const UserProvider = ({ children }) => {
   useEffect(() => {
-    console.log('EFFECT RUNNING');
-
     const unsubscribe = onAuthStateChangedListener(user => {
       if (user) {
         createUserDocumentFromAuth(user);
@@ -24,10 +22,7 @@ export const UserProvider = ({ children }) => {
       setCurrentUser(user);
     });
 
-    return () => {
-      console.log('CLEANUP RUNNING');
-      return unsubscribe;
-    };
+    return unsubscribe;
   }, []);
 
   const [currentUser, setCurrentUser] = useState(null);
