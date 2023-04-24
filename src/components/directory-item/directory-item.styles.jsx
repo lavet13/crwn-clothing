@@ -22,12 +22,12 @@ export const DirectoryItemContainer = styled.div`
   &:hover {
     cursor: pointer;
 
-    & ${() => `.${BackgroundImage.styledComponentId}`} {
+    & .${() => BackgroundImage.styledComponentId} {
       transform: scale(1.1);
       transition: transform 6s cubic-bezier(0.25, 0.45, 0.45, 0.95);
     }
 
-    & ${() => `.${Body.styledComponentId}`} {
+    & .${() => Body.styledComponentId} {
       opacity: 0.9;
     }
   }
@@ -65,8 +65,6 @@ export const Body = styled.div`
     font-size: 16px;
   }
 `;
-
-console.log(DirectoryItemContainer);
 
 // .directory-item-container {
 
