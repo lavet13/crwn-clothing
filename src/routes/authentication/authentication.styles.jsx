@@ -1,4 +1,6 @@
-.authentication-container {
+import styled from 'styled-components';
+
+export const AuthenticationContainer = styled.div`
   display: flex;
   justify-content: space-between;
   flex-flow: row wrap;
@@ -11,4 +13,4 @@
     padding: 0 15px;
     padding-top: 30px;
   }
-}
+`;

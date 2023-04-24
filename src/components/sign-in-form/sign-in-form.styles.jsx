@@ -1,4 +1,6 @@
-.sign-in-container {
+import styled from 'styled-components';
+
+export const SignInContainer = styled.div`
   align-self: flex-start;
   display: flex;
   flex-direction: column;
@@ -8,9 +10,9 @@
   h2 {
     margin: 10px 0;
   }
-}
+`;
 
-.buttons-container {
+export const ButtonsContainer = styled.div`
   display: flex;
   justify-content: space-between;
   column-gap: 10px;
@@ -20,4 +22,4 @@
     row-gap: 15px;
     justify-content: stretch;
   }
-}
+`;
