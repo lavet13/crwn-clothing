@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
+import { Fragment, useContext, useState, useEffect } from 'react';
 
 import { CategoriesContext } from '../../contexts/categories.context';
 
@@ -19,11 +19,14 @@ const Category = () => {
   }, [category, categoriesMap]);
 
   return (
-    <div className='category-page-container'>
-      {products?.map(product => (
-        <ProductCard key={product.id} product={product} />
-      ))}
-    </div>
+    <Fragment>
+      <h2 className='category-title'>{category}</h2>
+      <div className='category-container'>
+        {products?.map(product => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+    </Fragment>
   );
 };
 
