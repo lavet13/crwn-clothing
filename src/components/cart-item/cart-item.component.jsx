@@ -1,5 +1,6 @@
 import {
   CartItemContainer,
+  CartItemImage,
   ItemDetails,
   Name,
   Price,
@@ -10,7 +11,7 @@ const CartItem = ({ cartItem }) => {
 
   return (
     <CartItemContainer>
-      <img src={imageUrl} alt={`${name}`} />
+      <CartItemImage src={imageUrl} alt={`${name}`} />
       <ItemDetails>
         <Name>{name}</Name>
         <Price>

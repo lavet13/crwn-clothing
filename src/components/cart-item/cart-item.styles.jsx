@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 
+export const CartItemImage = styled.img`
+  width: 30%;
+`;
+
 export const CartItemContainer = styled.div`
   width: 100%;
   display: flex;
   height: 80px;
   margin-bottom: 15px;
-
-  img {
-    width: 30%;
-  }
 `;
 
 export const ItemDetails = styled.div`

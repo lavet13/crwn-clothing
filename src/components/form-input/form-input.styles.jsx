@@ -5,6 +5,23 @@ export const Group = styled.div`
   margin: 45px 0;
 `;
 
+export const Label = styled.label`
+  color: grey;
+  font-size: 16px;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  left: 5px;
+  top: 10px;
+  transition: 300ms ease all;
+
+  &.shrink {
+    top: -14px;
+    font-size: 12px;
+    color: black;
+  }
+`;
+
 export const Input = styled.input`
   background: none;
   background-color: white;
@@ -22,7 +39,7 @@ export const Input = styled.input`
     outline: none;
   }
 
-  &:focus ~ .${() => Label.styledComponentId} {
+  &:focus ~ ${Label} {
     top: -14px;
     font-size: 12px;
     color: black;
@@ -30,22 +47,5 @@ export const Input = styled.input`
 
   &[type='password'] {
     letter-spacing: 0.3em;
-  }
-`;
-
-export const Label = styled.label`
-  color: grey;
-  font-size: 16px;
-  font-weight: normal;
-  position: absolute;
-  pointer-events: none;
-  left: 5px;
-  top: 10px;
-  transition: 300ms ease all;
-
-  &.shrink {
-    top: -14px;
-    font-size: 12px;
-    color: black;
   }
 `;
