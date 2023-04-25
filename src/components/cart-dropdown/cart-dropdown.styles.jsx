@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Button from '../button/button.component';
+import { BaseButton } from '../button/button.styles';
 
 export const CartDropdownContainer = styled.div`
   width: 260px;
@@ -39,7 +39,7 @@ export const CartItems = styled.div`
   }
 `;
 
-export const DropdownButton = styled(Button)`
+export const DropdownButton = styled(BaseButton)`
   margin-top: auto;
 `;
 

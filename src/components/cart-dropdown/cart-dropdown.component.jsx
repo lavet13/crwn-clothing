@@ -27,10 +27,7 @@ const CartDropdown = () => {
         ))}
       </CartItems>
 
-      <DropdownButton
-        className='button-container'
-        onClick={goToCheckoutHandler}
-      >
+      <DropdownButton onClick={goToCheckoutHandler}>
         GO TO CHECKOUT
       </DropdownButton>
     </CartDropdownContainer>
