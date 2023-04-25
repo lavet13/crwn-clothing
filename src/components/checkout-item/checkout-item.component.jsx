@@ -5,15 +5,16 @@ import { CartContext } from '../../contexts/cart.context';
 import {
   CheckoutItemContainer,
   ImageContainer,
-  Name,
+  BaseSpan,
   Quantity,
-  Price,
   Arrow,
+  Value,
   RemoveButton,
 } from './checkout-item.styles';
 
 const CheckoutItem = ({ cartItem }) => {
   const { name, imageUrl, quantity, price } = cartItem;
+
   const { removeItemFromCart, clearItemFromCart, addItemToCart } =
     useContext(CartContext);
 
@@ -24,9 +25,7 @@ const CheckoutItem = ({ cartItem }) => {
   // and anything like that it's just for code clarity, so it's easy to update these if need be
   // 2) By doing this we actually be able to optimize this code (we'll talk about that later)
   const clearItemHandler = () => clearItemFromCart(cartItem);
-
   const addItemHandler = () => addItemToCart(cartItem);
-
   const removeItemHandler = () => removeItemFromCart(cartItem);
 
   return (
@@ -34,13 +33,13 @@ const CheckoutItem = ({ cartItem }) => {
       <ImageContainer>
         <img src={imageUrl} alt={`${name}`} />
       </ImageContainer>
-      <Name>{name}</Name>
+      <BaseSpan>{name}</BaseSpan>
       <Quantity>
         <Arrow onClick={removeItemHandler}>&#10094;</Arrow>
-        <span>{quantity}</span>
+        <Value>{quantity}</Value>
         <Arrow onClick={addItemHandler}>&#10095;</Arrow>
       </Quantity>
-      <Price>{price}</Price>
+      <BaseSpan>{price}</BaseSpan>
       <RemoveButton onClick={clearItemHandler}>&#10005;</RemoveButton>
     </CheckoutItemContainer>
   );

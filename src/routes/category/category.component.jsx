@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 
 import ProductCard from '../../components/product-card/product-card.component';
 
-import { CategoryContainer, CategoryTitle } from './category.styles.jsx';
+import { CategoryContainer, Title } from './category.styles.jsx';
 
 const Category = () => {
   const { category } = useParams();
@@ -20,7 +20,7 @@ const Category = () => {
 
   return (
     <Fragment>
-      <CategoryTitle>{category}</CategoryTitle>
+      <Title>{category}</Title>
       <CategoryContainer>
         {products?.map(product => (
           <ProductCard key={product.id} product={product} />

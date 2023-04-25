@@ -12,7 +12,7 @@ import {
 } from './product-card.styles';
 
 const ProductCard = ({ product }) => {
-  const { name, imageUrl, price } = product;
+  const { name, price, imageUrl } = product;
   const { addItemToCart } = useContext(CartContext);
 
   const addProductToCart = () => addItemToCart(product);
@@ -27,8 +27,8 @@ const ProductCard = ({ product }) => {
       </Footer>
 
       <Button
-        onClick={addProductToCart}
         buttonType={BUTTON_TYPE_CLASSES.inverted}
+        onClick={addProductToCart}
       >
         Add to card
       </Button>

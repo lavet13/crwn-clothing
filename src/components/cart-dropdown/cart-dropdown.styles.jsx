@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import {
   BaseButton,
   GoogleSignInButton,
@@ -53,12 +54,3 @@ export const CartItems = styled.div`
     background: #555;
   }
 `;
-
-// .cart-dropdown-container {
-
-//   .cart-link {
-//     button {
-//       width: 100%;
-//     }
-//   }
-// }

@@ -1,9 +1,4 @@
 import styled from 'styled-components';
-import {
-  BaseButton,
-  GoogleSignInButton,
-  InvertedButton,
-} from '../button/button.styles';
 
 export const ProductCardContainer = styled.div`
   width: 100%;
@@ -20,9 +15,7 @@ export const ProductCardContainer = styled.div`
     margin-bottom: 5px;
   }
 
-  ${BaseButton},
-  ${GoogleSignInButton},
-  ${InvertedButton} {
+  button {
     width: 80%;
     opacity: 0.7;
     position: absolute;
@@ -35,9 +28,7 @@ export const ProductCardContainer = styled.div`
       opacity: 0.8;
     }
 
-    ${BaseButton},
-    ${GoogleSignInButton},
-    ${InvertedButton} {
+    button {
       opacity: 0.85;
       display: flex;
     }
