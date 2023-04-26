@@ -1,9 +1,4 @@
-import {
-  CartItemContainer,
-  ItemDetails,
-  Name,
-  Price,
-} from './cart-item.styles';
+import { CartItemContainer, ItemDetails } from './cart-item.styles';
 
 const CartItem = ({ cartItem }) => {
   const { name, imageUrl, price, quantity } = cartItem;
@@ -12,10 +7,10 @@ const CartItem = ({ cartItem }) => {
     <CartItemContainer>
       <img src={imageUrl} alt={`${name}`} />
       <ItemDetails>
-        <Name>{name}</Name>
-        <Price>
+        <span>{name}</span>
+        <span>
           {quantity} x ${price}
-        </Price>
+        </span>
       </ItemDetails>
     </CartItemContainer>
   );
