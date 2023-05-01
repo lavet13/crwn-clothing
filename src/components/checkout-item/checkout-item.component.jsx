@@ -1,6 +1,12 @@
-import { useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { CartContext } from '../../contexts/cart.context';
+import { selectCartItems } from '../../store/cart/cart.selector';
+
+import {
+  removeItemFromCart,
+  clearItemFromCart,
+  addItemToCart,
+} from '../../store/cart/cart.action';
 
 import {
   CheckoutItemContainer,
@@ -14,9 +20,8 @@ import {
 
 const CheckoutItem = ({ cartItem }) => {
   const { name, imageUrl, quantity, price } = cartItem;
-
-  const { removeItemFromCart, clearItemFromCart, addItemToCart } =
-    useContext(CartContext);
+  const dispatch = useDispatch();
+  const cartItems = useSelector(selectCartItems);
 
   // two purposes of why we are creating outside handlers rather
   // than putting these anynomous functions directly into these onClick areas:
@@ -24,9 +29,11 @@ const CheckoutItem = ({ cartItem }) => {
   // being inside of our jsx, there are in a place where we know we instantiate and initialize all of our helper functions
   // and anything like that it's just for code clarity, so it's easy to update these if need be
   // 2) By doing this we actually be able to optimize this code (we'll talk about that later)
-  const clearItemHandler = () => clearItemFromCart(cartItem);
-  const addItemHandler = () => addItemToCart(cartItem);
-  const removeItemHandler = () => removeItemFromCart(cartItem);
+  const clearItemHandler = () =>
+    dispatch(clearItemFromCart(cartItems, cartItem));
+  const addItemHandler = () => dispatch(addItemToCart(cartItems, cartItem));
+  const removeItemHandler = () =>
+    dispatch(removeItemFromCart(cartItems, cartItem));
 
   return (
     <CheckoutItemContainer>

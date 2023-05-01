@@ -7,21 +7,17 @@ import { store } from './store/store';
 import './index.scss';
 import App from './App';
 
-import { CartProvider } from './contexts/cart.context';
-
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  // <React.StrictMode>
-  <Provider store={store}>
-    <BrowserRouter>
-      <CartProvider>
+  <React.StrictMode>
+    <Provider store={store}>
+      <BrowserRouter>
         <App />
-      </CartProvider>
-    </BrowserRouter>
-  </Provider>
-  // </React.StrictMode>
+      </BrowserRouter>
+    </Provider>
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
