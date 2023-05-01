@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectCartItems } from '../../store/cart/cart.selector';
 
 import {
+  addItemToCart,
   removeItemFromCart,
   clearItemFromCart,
-  addItemToCart,
 } from '../../store/cart/cart.action';
 
 import {

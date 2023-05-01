@@ -1,5 +1,8 @@
 import { createSelector } from 'reselect';
 
+// a lot of a logic is being extrapolated into selectors and using reselect
+// we can memoize them so that they are just as efficient as if we were to store
+// them using either useReducer or useState inside of a context component(provider)
 const selectCartReducer = state => state.cart;
 
 export const selectCartItems = createSelector(
