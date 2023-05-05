@@ -28,10 +28,11 @@ export const BaseSpan = styled.span`
 
 export const Quantity = styled(BaseSpan)`
   display: flex;
+  align-items: center;
 `;
 
 export const Value = styled.span`
-  margin: 0 10px;
+  margin: 3px 10px 0 10px;
 `;
 
 export const Arrow = styled.div`

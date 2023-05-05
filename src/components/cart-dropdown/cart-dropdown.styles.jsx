@@ -7,7 +7,8 @@ import {
 } from '../button/button.styles';
 
 export const CartDropdownContainer = styled.div`
-  width: 260px;
+  max-width: 280px;
+  width: 100%;
   height: 340px;
   display: flex;
   flex-direction: column;
