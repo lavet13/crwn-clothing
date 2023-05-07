@@ -125,3 +125,17 @@ export const onAuthStateChangedListener = callback =>
   onAuthStateChanged(auth, callback);
 
 export const signOutUser = async () => await signOut(auth);
+
+// convert an observable listener into a promise based function call
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      userAuth => {
+        unsubscribe(); // if we don't unsub, there will be a memory leak meaning that listener is always active inside of our file
+        resolve(userAuth);
+      },
+      reject
+    );
+  });
+};
