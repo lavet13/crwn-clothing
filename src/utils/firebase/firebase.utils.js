@@ -92,6 +92,7 @@ export const createUserDocumentFromAuth = async (
         createdAt,
         ...additionalInformation,
       });
+
       return await getDoc(userDocRef);
     } catch (error) {
       console.log('error creating the user', error.message);

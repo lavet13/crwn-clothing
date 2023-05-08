@@ -7,6 +7,8 @@ import {
   signInSuccess,
   signOutUserFailed,
   signOutUserSuccess,
+  signUpSuccess,
+  signUpFailed,
 } from './user.action';
 
 import {
@@ -68,7 +70,7 @@ export function* signInWithEmail({ payload: { email, password } }) {
   }
 }
 
-export function* signUpWithEmail({
+export function* signUp({
   payload: { email, password, ...additionalDetails },
 }) {
   try {
@@ -78,10 +80,16 @@ export function* signUpWithEmail({
       password
     );
 
-    yield call(getSnapshotFromUserAuth, user, additionalDetails);
+    yield put(signUpSuccess(user, additionalDetails));
   } catch (error) {
-    yield put(signInFailed(error));
+    yield put(signUpFailed(error));
   }
+}
+
+export function* signInAfterSignUp({
+  payload: { user, ...additionalDetails },
+}) {
+  yield call(getSnapshotFromUserAuth, user, additionalDetails);
 }
 
 export function* signUserOut() {
@@ -105,8 +113,12 @@ export function* onEmailSignInStart() {
   yield takeLatest(USER_ACTION_TYPES.EMAIL_SIGN_IN_START, signInWithEmail);
 }
 
-export function* onEmailSignUpStart() {
-  yield takeLatest(USER_ACTION_TYPES.EMAIL_SIGN_UP_START, signUpWithEmail);
+export function* onSignUpStart() {
+  yield takeLatest(USER_ACTION_TYPES.SIGN_UP_START, signUp);
+}
+
+export function* onSignUpSuccess() {
+  yield takeLatest(USER_ACTION_TYPES.SIGN_UP_SUCCESS, signInAfterSignUp);
 }
 
 export function* onSignUserOut() {
@@ -118,7 +130,8 @@ export function* userSagas() {
     call(onCheckUserSession),
     call(onGoogleSignInStart),
     call(onEmailSignInStart),
-    call(onEmailSignUpStart),
+    call(onSignUpStart),
+    call(onSignUpSuccess),
     call(onSignUserOut),
   ]);
 }

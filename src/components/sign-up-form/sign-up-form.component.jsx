@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import FormInput from '../form-input/form-input.component';
 import Button from '../button/button.component';
 
-import { emailSignUpStart } from '../../store/user/user.action';
+import { signUpStart } from '../../store/user/user.action';
 
 import { SignUpContainer } from './sign-up-form.styles';
 
@@ -37,7 +37,7 @@ const SignUpForm = () => {
       return;
     }
 
-    dispatch(emailSignUpStart({ email, password, displayName }));
+    dispatch(signUpStart({ email, password, displayName }));
 
     // clear fields
     resetFormFields();

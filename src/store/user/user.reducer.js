@@ -13,7 +13,7 @@ export const userReducer = (state = USER_INITIAL_STATE, action = {}) => {
     case USER_ACTION_TYPES.CHECK_USER_SESSION:
     case USER_ACTION_TYPES.GOOGLE_SIGN_IN_START:
     case USER_ACTION_TYPES.EMAIL_SIGN_IN_START:
-    case USER_ACTION_TYPES.EMAIL_SIGN_UP_START:
+    case USER_ACTION_TYPES.SIGN_UP_START:
     case USER_ACTION_TYPES.SIGN_OUT_USER_START:
       return { ...state, isLoading: true };
     case USER_ACTION_TYPES.SIGN_OUT_USER_SUCCUSS:
@@ -23,6 +23,8 @@ export const userReducer = (state = USER_INITIAL_STATE, action = {}) => {
     case USER_ACTION_TYPES.SIGN_IN_SUCCESS:
       return { ...state, currentUser: payload, isLoading: false };
     case USER_ACTION_TYPES.SIGN_IN_FAILED:
+      return { ...state, error: payload, isLoading: false };
+    case USER_ACTION_TYPES.SIGN_UP_FAILED:
       return { ...state, error: payload, isLoading: false };
     default:
       return state; // this part of my reducer didn't change, state is an object, everything in react is referencing by memory
