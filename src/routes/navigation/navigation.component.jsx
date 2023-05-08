@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import CartIcon from '../../components/cart-icon/cart-icon.component';
 import CartDropdown from '../../components/cart-dropdown/cart-dropdown.component';
 
-import { signOutUser } from '../../store/user/user.action';
+import { signOutStart } from '../../store/user/user.action';
 
 import { selectIsCartOpen } from '../../store/cart/cart.selector';
 import { selectCurrentUser } from '../../store/user/user.selector';
@@ -24,7 +24,7 @@ const Navigation = () => {
   const isCartOpen = useSelector(selectIsCartOpen);
   const dispatch = useDispatch();
 
-  const signOutUserHandler = () => dispatch(signOutUser());
+  const signOutUser = () => dispatch(signOutStart());
 
   return (
     <Fragment>
@@ -35,7 +35,7 @@ const Navigation = () => {
         <NavLinks>
           <NavLink to='/shop'>SHOP</NavLink>
           {currentUser ? (
-            <NavLink as='span' onClick={signOutUserHandler}>
+            <NavLink as='span' onClick={signOutUser}>
               SIGN OUT
             </NavLink>
           ) : (

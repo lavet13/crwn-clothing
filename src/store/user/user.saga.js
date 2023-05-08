@@ -5,8 +5,8 @@ import { USER_ACTION_TYPES } from './user.types';
 import {
   signInFailed,
   signInSuccess,
-  signOutUserFailed,
-  signOutUserSuccess,
+  signOutFailed,
+  signOutSuccess,
   signUpSuccess,
   signUpFailed,
 } from './user.action';
@@ -92,12 +92,12 @@ export function* signInAfterSignUp({
   yield call(getSnapshotFromUserAuth, user, additionalDetails);
 }
 
-export function* signUserOut() {
+export function* signOut() {
   try {
     yield call(signOutUser);
-    yield put(signOutUserSuccess());
+    yield put(signOutSuccess());
   } catch (error) {
-    yield put(signOutUserFailed(error));
+    yield put(signOutFailed(error));
   }
 }
 
@@ -121,8 +121,8 @@ export function* onSignUpSuccess() {
   yield takeLatest(USER_ACTION_TYPES.SIGN_UP_SUCCESS, signInAfterSignUp);
 }
 
-export function* onSignUserOut() {
-  yield takeLatest(USER_ACTION_TYPES.SIGN_OUT_USER_START, signUserOut);
+export function* onSignOutStart() {
+  yield takeLatest(USER_ACTION_TYPES.SIGN_OUT_START, signOut);
 }
 
 export function* userSagas() {
@@ -132,6 +132,6 @@ export function* userSagas() {
     call(onEmailSignInStart),
     call(onSignUpStart),
     call(onSignUpSuccess),
-    call(onSignUserOut),
+    call(onSignOutStart),
   ]);
 }
