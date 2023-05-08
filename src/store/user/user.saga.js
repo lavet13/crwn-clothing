@@ -8,14 +8,26 @@ import {
   getCurrentUser,
 } from '../../utils/firebase/firebase.utils';
 
+export function* getSnapshotFromUserAuth(userAuth, additionalDetails = {}) {
+  try {
+    const userSnapshot = yield call(
+      createUserDocumentFromAuth,
+      userAuth,
+      additionalDetails
+    );
+    yield put(signInSuccess({ id: userSnapshot.id, ...userSnapshot.data() }));
+  } catch (error) {
+    yield put(signInFailed(error));
+  }
+}
+
 export function* isUserAuthenticated() {
   try {
     const userAuth = yield call(getCurrentUser);
 
     if (!userAuth) return;
 
-    yield call(createUserDocumentFromAuth, userAuth);
-    yield put(signInSuccess(userAuth));
+    yield call(getSnapshotFromUserAuth, userAuth);
   } catch (error) {
     yield put(signInFailed(error));
   }
@@ -26,5 +38,5 @@ export function* onCheckUserSession() {
 }
 
 export function* userSagas() {
-  yield all([]);
+  yield all([call(onCheckUserSession)]);
 }
