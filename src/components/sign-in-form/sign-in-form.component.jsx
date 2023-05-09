@@ -1,14 +1,15 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+
+import {
+  googleSignInStart,
+  emailSignInStart,
+} from '../../store/user/user.action';
 
 import { SignInContainer, ButtonsContainer } from './sign-in-form.styles';
 
 import FormInput from '../form-input/form-input.component';
 import Button, { BUTTON_TYPE_CLASSES } from '../button/button.component';
-
-import {
-  signInWithGooglePopup,
-  signInAuthUserWithEmailAndPassword,
-} from '../../utils/firebase/firebase.utils';
 
 const defaultFormFields = {
   email: '',
@@ -16,6 +17,7 @@ const defaultFormFields = {
 };
 
 const SignInForm = () => {
+  const dispatch = useDispatch();
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { email, password } = formFields;
 
@@ -28,49 +30,43 @@ const SignInForm = () => {
   };
 
   const signInWithGoogle = async () => {
-    try {
-      await signInWithGooglePopup();
-    } catch (error) {
-      switch (error.code) {
-        case 'auth/cancelled-popup-request':
-          alert('Authentication with Google was canceled');
-          break;
-        case 'auth/popup-closed-by-user':
-          alert('Authentication with Google was closed by user');
-          break;
-        case 'auth/popup-blocked':
-          alert('Blocked by Firebase');
-          break;
+    dispatch(googleSignInStart());
+    // switch (error.code) {
+    //   case 'auth/cancelled-popup-request':
+    //     alert('Authentication with Google was canceled');
+    //     break;
+    //   case 'auth/popup-closed-by-user':
+    //     alert('Authentication with Google was closed by user');
+    //     break;
+    //   case 'auth/popup-blocked':
+    //     alert('Blocked by Firebase');
+    //     break;
 
-        default:
-          console.log(error.code);
-      }
-    }
+    //   default:
+    //     console.log(error.code);
+    // }
   };
 
   const handleSubmit = async event => {
     event.preventDefault();
 
-    try {
-      await signInAuthUserWithEmailAndPassword(email, password);
+    dispatch(emailSignInStart(email, password));
 
-      resetFormFields();
-    } catch (error) {
-      switch (error.code) {
-        case 'auth/wrong-password':
-          alert('Incorrect password for email');
-          break;
-        case 'auth/user-not-found':
-          alert('No user associated with this email');
-          break;
-        case 'auth/network-request-failed':
-          alert('Blocked by Firebase');
-          break;
+    resetFormFields();
+    //   switch (error.code) {
+    //     case 'auth/wrong-password':
+    //       alert('Incorrect password for email');
+    //       break;
+    //     case 'auth/user-not-found':
+    //       alert('No user associated with this email');
+    //       break;
+    //     case 'auth/network-request-failed':
+    //       alert('Blocked by Firebase');
+    //       break;
 
-        default:
-          console.log(error.code);
-      }
-    }
+    //     default:
+    //       console.log(error.code);
+    //   }
   };
 
   return (
