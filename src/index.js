@@ -8,7 +8,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import './index.scss';
 import App from './App';
 import { store, persistor } from './store/store';
-import { stripePromise } from './utils/stripe/stripe.utils';
+import { stripePromise, options } from './utils/stripe/stripe.utils';
 
 import reportWebVitals from './reportWebVitals';
 
@@ -18,7 +18,7 @@ root.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
-          <Elements stripe={stripePromise}>
+          <Elements stripe={stripePromise} options={options}>
             <App />
           </Elements>
         </BrowserRouter>
