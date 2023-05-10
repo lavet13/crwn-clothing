@@ -1,16 +1,26 @@
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  CardElement,
+  PaymentRequestButtonElement,
+  useStripe,
+  useElements,
+} from '@stripe/react-stripe-js';
 
 import { selectCurrentUser } from '../../store/user/user.selector';
 import { selectCartTotal } from '../../store/cart/cart.selector';
+import { selectPaymentRequest } from '../../store/payment/payment.selector';
+import { checkPaymentRequest } from '../../store/payment/payment.action';
 
 import { PaymentButton } from './payment-form.styles';
 import { BUTTON_TYPE_CLASSES } from '../button/button.component';
+import CardSection from '../card-section/card-section.component';
 
 import { PaymentFormContainer, FormContainer } from './payment-form.styles';
 
 const PaymentForm = () => {
+  const dispatch = useDispatch();
+  const paymentRequest = useSelector(selectPaymentRequest);
   const currentUser = useSelector(selectCurrentUser);
   const amount = useSelector(selectCartTotal);
   const [isProcessingPayment, setIsProccessingPayment] = useState(false);
@@ -59,11 +69,16 @@ const PaymentForm = () => {
     }
   };
 
+  useEffect(() => {
+    if (!stripe) return;
+
+    dispatch(checkPaymentRequest(stripe, amount));
+  }, [stripe, amount]);
+
   return (
     <PaymentFormContainer>
       <FormContainer onSubmit={paymentHandler}>
-        <h2>Credit Card Payment: </h2>
-        <CardElement />
+        <CardSection />
         <PaymentButton
           isLoading={isProcessingPayment}
           type='submit'
@@ -71,6 +86,11 @@ const PaymentForm = () => {
         >
           Pay Now
         </PaymentButton>
+        {paymentRequest && (
+          <PaymentRequestButtonElement
+            options={{ paymentRequest }}
+          ></PaymentRequestButtonElement>
+        )}
       </FormContainer>
     </PaymentFormContainer>
   );
