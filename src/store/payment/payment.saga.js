@@ -1,7 +1,12 @@
 import { call, all, put, takeLatest } from 'redux-saga/effects';
 
 import { PAYMENT_ACTION_TYPES } from './payment.types';
-import { paymentRequestSuccess, paymentRequestFailed } from './payment.action';
+import {
+  paymentRequestSuccess,
+  paymentRequestFailed,
+  cardPaymentSuccess,
+  cardPaymentFailed,
+} from './payment.action';
 
 export function* isActivePayment({ payload: { stripe, amount } }) {
   try {
@@ -28,10 +33,61 @@ export function* isActivePayment({ payload: { stripe, amount } }) {
   }
 }
 
+export function* payWithCard({
+  payload: { stripe, elements, CardElement, amount, currentUser },
+}) {
+  try {
+    const response = yield call(
+      fetch,
+      '/.netlify/functions/create-payment-intent',
+      {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: amount * 100 }),
+      }
+    );
+    console.log(response);
+
+    if (!(response.status >= 200 && response.status < 300) || !response.ok)
+      throw response;
+
+    const responseData = yield response.json();
+
+    const {
+      paymentIntent: { client_secret },
+    } = responseData;
+
+    console.log(client_secret);
+
+    const paymentResult = yield call(stripe.confirmCardPayment, client_secret, {
+      payment_method: {
+        card: elements.getElement(CardElement),
+        billing_details: {
+          name: currentUser ? currentUser.displayName : 'Guest',
+        },
+      },
+    });
+
+    if (paymentResult.error) {
+      const { message } = paymentResult.error;
+
+      yield put(cardPaymentFailed(message));
+    } else {
+      yield put(cardPaymentSuccess(paymentResult.paymentIntent.status));
+    }
+  } catch (error) {
+    yield put(cardPaymentFailed(error));
+  }
+}
+
 export function* onCheckPaymentRequest() {
   yield takeLatest(PAYMENT_ACTION_TYPES.CHECK_PAYMENT_REQUEST, isActivePayment);
 }
 
+export function* onCardPaymentStart() {
+  yield takeLatest(PAYMENT_ACTION_TYPES.CARD_PAYMENT_START, payWithCard);
+}
+
 export function* paymentSagas() {
-  yield all([call(onCheckPaymentRequest)]);
+  yield all([call(onCheckPaymentRequest), call(onCardPaymentStart)]);
 }

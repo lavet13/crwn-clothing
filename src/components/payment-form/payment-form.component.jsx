@@ -9,8 +9,14 @@ import {
 
 import { selectCurrentUser } from '../../store/user/user.selector';
 import { selectCartTotal } from '../../store/cart/cart.selector';
-import { selectPaymentRequest } from '../../store/payment/payment.selector';
-import { checkPaymentRequest } from '../../store/payment/payment.action';
+import {
+  selectPaymentIsLoading,
+  selectPaymentRequest,
+} from '../../store/payment/payment.selector';
+import {
+  cardPaymentStart,
+  checkPaymentRequest,
+} from '../../store/payment/payment.action';
 
 import { PaymentButton } from './payment-form.styles';
 import { BUTTON_TYPE_CLASSES } from '../button/button.component';
@@ -23,7 +29,7 @@ const PaymentForm = () => {
   const paymentRequest = useSelector(selectPaymentRequest);
   const currentUser = useSelector(selectCurrentUser);
   const amount = useSelector(selectCartTotal);
-  const [isProcessingPayment, setIsProccessingPayment] = useState(false);
+  const isProcessingPayment = useSelector(selectPaymentIsLoading);
   const stripe = useStripe(); // to make requests in the format that Stripe needs it to be
   const elements = useElements();
 
@@ -32,41 +38,10 @@ const PaymentForm = () => {
 
     if (!stripe || !elements || isProcessingPayment) return;
 
-    setIsProccessingPayment(true);
-
     // creating payment intent... So that Stripe knows that, oh, there is a payment coming.
-    const response = await fetch('/.netlify/functions/create-payment-intent', {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: amount * 100 }),
-    }).then(res => res.json());
-
-    const {
-      paymentIntent: { client_secret },
-    } = response;
-
-    console.log(client_secret);
-
-    const paymentResult = await stripe.confirmCardPayment(client_secret, {
-      payment_method: {
-        card: elements.getElement(CardElement),
-        billing_details: {
-          name: currentUser ? currentUser.displayName : 'Guest',
-        },
-      },
-    });
-
-    setIsProccessingPayment(false);
-
-    if (paymentResult.error) {
-      const { message } = paymentResult.error;
-
-      alert(message);
-    } else {
-      if (paymentResult.paymentIntent.status === 'succeeded') {
-        alert('Payment Successful');
-      }
-    }
+    dispatch(
+      cardPaymentStart(stripe, elements, CardElement, currentUser, amount)
+    );
   };
 
   useEffect(() => {

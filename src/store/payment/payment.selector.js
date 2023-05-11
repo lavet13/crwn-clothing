@@ -6,3 +6,8 @@ export const selectPaymentRequest = createSelector(
   [selectPaymentReducer],
   payment => payment.paymentRequest
 );
+
+export const selectPaymentIsLoading = createSelector(
+  [selectPaymentReducer],
+  payment => payment.isLoading
+);
