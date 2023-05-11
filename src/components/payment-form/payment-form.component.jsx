@@ -55,16 +55,16 @@ const PaymentForm = () => {
     }
   };
 
-  useEffect(() => {
-    if (!stripe) return;
+  // useEffect(() => {
+  //   if (!stripe) return;
 
-    dispatch(checkPaymentRequest(stripe, amount));
-  }, [stripe, amount]);
+  //   dispatch(checkPaymentRequest(stripe, amount));
+  // }, [stripe, amount]);
 
   return (
     <PaymentFormContainer>
       <FormContainer onSubmit={paymentHandler}>
-        <AddressSection onChange={addressChangeHandler} />
+        {/* <AddressSection onChange={addressChangeHandler} /> */}
         <CardSection />
         <PaymentButton
           isLoading={isProcessingPayment}
@@ -73,11 +73,11 @@ const PaymentForm = () => {
         >
           Pay Now
         </PaymentButton>
-        {paymentRequest && (
+        {/* {paymentRequest && (
           <PaymentRequestButtonElement
             options={{ paymentRequest }}
           ></PaymentRequestButtonElement>
-        )}
+        )} */}
       </FormContainer>
     </PaymentFormContainer>
   );
