@@ -2,6 +2,8 @@ import { Fragment } from 'react';
 
 import { CardElement } from '@stripe/react-stripe-js';
 
+import { CardSectionContainer } from './card-section.styles';
+
 const CARD_ELEMENT_OPTIONS = {
   style: {
     base: {
@@ -24,7 +26,9 @@ const CardSection = () => {
   return (
     <Fragment>
       <h2>Credit Card Payment: </h2>
-      <CardElement options={CARD_ELEMENT_OPTIONS} />
+      <CardSectionContainer>
+        <CardElement options={CARD_ELEMENT_OPTIONS} />
+      </CardSectionContainer>
     </Fragment>
   );
 };

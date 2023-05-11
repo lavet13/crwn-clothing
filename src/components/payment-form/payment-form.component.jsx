@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+
 import {
   CardElement,
+  AddressElement,
   PaymentRequestButtonElement,
   useStripe,
   useElements,
@@ -23,6 +25,7 @@ import { BUTTON_TYPE_CLASSES } from '../button/button.component';
 import CardSection from '../card-section/card-section.component';
 
 import { PaymentFormContainer, FormContainer } from './payment-form.styles';
+import AddressSection from '../address-section/address-section.component';
 
 const PaymentForm = () => {
   const dispatch = useDispatch();
@@ -44,6 +47,14 @@ const PaymentForm = () => {
     );
   };
 
+  const addressChangeHandler = event => {
+    console.log(event);
+    console.log(event.value);
+    if (event.complete) {
+      // Extract potentially complete address
+    }
+  };
+
   useEffect(() => {
     if (!stripe) return;
 
@@ -53,6 +64,7 @@ const PaymentForm = () => {
   return (
     <PaymentFormContainer>
       <FormContainer onSubmit={paymentHandler}>
+        <AddressSection onChange={addressChangeHandler} />
         <CardSection />
         <PaymentButton
           isLoading={isProcessingPayment}
