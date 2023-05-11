@@ -37,6 +37,9 @@ export function* payWithCard({
   payload: { stripe, elements, CardElement, amount, currentUser },
 }) {
   try {
+    // @INCOMPLETE: try to use axios instead
+    // https://stackoverflow.com/questions/40007935/how-to-handle-errors-in-fetch-responses-with-redux-saga
+    // https://stripe.com/docs/stripe-js/elements/payment-request-button?client=react#react-mount-element
     const response = yield call(
       fetch,
       '/.netlify/functions/create-payment-intent',
