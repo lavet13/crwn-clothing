@@ -51,18 +51,16 @@ export function* payWithCard({
     );
     console.log(response);
 
-    if (!(response.status >= 200 && response.status < 300) || !response.ok)
+    if (!(response.status >= 200 && response.status < 300) || !response.ok) {
+      alert(response);
       throw response;
+    }
 
     const responseData = yield response.json();
 
-    const {
-      paymentIntent: { client_secret },
-    } = responseData;
+    const clientSecret = responseData.paymentIntent.client_secret;
 
-    console.log(client_secret);
-
-    const paymentResult = yield call(stripe.confirmCardPayment, client_secret, {
+    const paymentResult = yield call(stripe.confirmCardPayment, clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement),
         billing_details: {
