@@ -11,3 +11,8 @@ export const selectPaymentIsLoading = createSelector(
   [selectPaymentReducer],
   payment => payment.isLoading
 );
+
+export const selectPaymentRequestError = createSelector(
+  [selectPaymentReducer],
+  payment => payment.error
+);
