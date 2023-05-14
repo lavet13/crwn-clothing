@@ -14,14 +14,14 @@ export const cardPaymentStart = (
   stripe,
   elements,
   CardElement,
-  currentUser,
+  address,
   amount
 ) =>
   createAction(PAYMENT_ACTION_TYPES.CARD_PAYMENT_START, {
     stripe,
     elements,
     CardElement,
-    currentUser,
+    address,
     amount,
   });
 

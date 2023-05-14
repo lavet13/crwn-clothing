@@ -34,7 +34,7 @@ export function* isActivePayment({ payload: { stripe, amount } }) {
 }
 
 export function* payWithCard({
-  payload: { stripe, elements, CardElement, amount, currentUser },
+  payload: { stripe, elements, CardElement, amount, address },
 }) {
   try {
     // @INCOMPLETE: try to use axios instead
@@ -51,10 +51,8 @@ export function* payWithCard({
     );
     console.log(response);
 
-    if (!(response.status >= 200 && response.status < 300) || !response.ok) {
-      alert(response);
+    if (!(response.status >= 200 && response.status < 300) || !response.ok)
       throw response;
-    }
 
     const responseData = yield response.json();
 
@@ -64,7 +62,7 @@ export function* payWithCard({
       payment_method: {
         card: elements.getElement(CardElement),
         billing_details: {
-          name: currentUser ? currentUser.displayName : 'Guest',
+          ...address,
         },
       },
     });

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import {
@@ -8,11 +8,11 @@ import {
   useElements,
 } from '@stripe/react-stripe-js';
 
-import { selectCurrentUser } from '../../store/user/user.selector';
 import { selectCartTotal } from '../../store/cart/cart.selector';
 import {
   selectPaymentIsLoading,
   selectPaymentRequest,
+  selectPaymentRequestError,
 } from '../../store/payment/payment.selector';
 import {
   cardPaymentStart,
@@ -26,10 +26,24 @@ import CardSection from '../card-section/card-section.component';
 import { PaymentFormContainer, FormContainer } from './payment-form.styles';
 import AddressSection from '../address-section/address-section.component';
 
+const defaultAddressFields = {
+  name: '',
+  address: {
+    city: '',
+    country: 'RU',
+    line1: '',
+    line2: null,
+    postal_code: '',
+    state: '',
+  },
+};
+
 const PaymentForm = () => {
+  const [addressState, setAddressState] = useState(defaultAddressFields);
+  const [isAddressComplete, setIsAddressComplete] = useState(false);
   const dispatch = useDispatch();
   const paymentRequest = useSelector(selectPaymentRequest);
-  const currentUser = useSelector(selectCurrentUser);
+  const paymentRequestErrorMessage = useSelector(selectPaymentRequestError);
   const amount = useSelector(selectCartTotal);
   const isProcessingPayment = useSelector(selectPaymentIsLoading);
   const stripe = useStripe(); // to make requests in the format that Stripe needs it to be
@@ -37,21 +51,20 @@ const PaymentForm = () => {
 
   const paymentHandler = async event => {
     event.preventDefault();
+    console.log(isAddressComplete);
+    if (!isAddressComplete) return alert("Address isn't complete");
 
     if (!stripe || !elements || isProcessingPayment) return;
 
     // creating payment intent... So that Stripe knows that, oh, there is a payment coming.
     dispatch(
-      cardPaymentStart(stripe, elements, CardElement, currentUser, amount)
+      cardPaymentStart(stripe, elements, CardElement, addressState, amount)
     );
   };
 
   const addressChangeHandler = event => {
-    console.log(event);
-    console.log(event.value);
-    if (event.complete) {
-      // Extract potentially complete address
-    }
+    setAddressState(event.value);
+    setIsAddressComplete(event.complete);
   };
 
   useEffect(() => {
@@ -73,10 +86,9 @@ const PaymentForm = () => {
           Pay Now
         </PaymentButton>
         {paymentRequest && (
-          <PaymentRequestButtonElement
-            options={{ paymentRequest }}
-          ></PaymentRequestButtonElement>
+          <PaymentRequestButtonElement options={{ paymentRequest }} />
         )}
+        {paymentRequestErrorMessage && <p>{paymentRequestErrorMessage}</p>}
       </FormContainer>
     </PaymentFormContainer>
   );
