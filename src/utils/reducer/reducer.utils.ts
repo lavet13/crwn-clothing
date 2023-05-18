@@ -1,5 +1,8 @@
 import { AnyAction } from 'redux';
 
+// type guards
+// matchable type is a type we ourselves implement
+
 export type ActionWithPayload<T, P> = {
   type: T;
   payload: P;
