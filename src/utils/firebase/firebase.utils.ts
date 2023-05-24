@@ -7,6 +7,9 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  User,
+  UserCredential,
+  NextOrObserver,
 } from 'firebase/auth';
 import {
   getFirestore,
@@ -17,7 +20,9 @@ import {
   writeBatch,
   query,
   getDocs,
+  DocumentData,
 } from 'firebase/firestore';
+import { Category } from '../../store/categories/categories.types';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyA_3-3-3c55IopVdGQxV2T1wj1f5_rcd_I',
@@ -43,9 +48,9 @@ export const signInWithGooglePopup = () =>
 export const db = getFirestore();
 
 export const addCollectionAndDocuments = async (
-  collectionKey,
-  objectsToAdd
-) => {
+  collectionKey: string,
+  objectsToAdd: Category[]
+): Promise<void> => {
   const collectionRef = collection(db, collectionKey);
   const batch = writeBatch(db);
 
@@ -60,7 +65,7 @@ export const addCollectionAndDocuments = async (
 
 // Utilities functions are important because they minimize the impact that changing
 // third party libraries have on our code base
-export const getCategoriesAndDocuments = async () => {
+export const getCategoriesAndDocuments = async (): Promise<DocumentData[]> => {
   const collectionRef = collection(db, 'categories');
   const q = query(collectionRef);
   const querySnapshot = await getDocs(q);
@@ -69,7 +74,7 @@ export const getCategoriesAndDocuments = async () => {
 };
 
 export const createUserDocumentFromAuth = async (
-  userAuth,
+  userAuth: User | null,
   additionalInformation = {}
 ) => {
   if (!userAuth) return;
@@ -94,7 +99,7 @@ export const createUserDocumentFromAuth = async (
       });
 
       return await getDoc(userDocRef);
-    } catch (error) {
+    } catch (error: any) {
       console.log('error creating the user', error.message);
     }
   }
@@ -102,19 +107,27 @@ export const createUserDocumentFromAuth = async (
   return userSnapshot;
 };
 
-export const createAuthUserWithEmailAndPassword = async (email, password) => {
+export const createAuthUserWithEmailAndPassword = async (
+  email: string,
+  password: string
+): Promise<UserCredential | void> => {
   if (!email || !password) return;
 
   return await createUserWithEmailAndPassword(auth, email, password);
 };
 
-export const signInAuthUserWithEmailAndPassword = async (email, password) => {
+export const signInAuthUserWithEmailAndPassword = async (
+  email: string,
+  password: string
+): Promise<UserCredential | void> => {
   if (!email || !password) return;
 
   return await signInWithEmailAndPassword(auth, email, password);
 };
 
-export const getDataFromUserDocument = async userAuth => {
+export const getDataFromUserDocument = async (
+  userAuth: User | null
+): Promise<DocumentData | void> => {
   if (!userAuth) return;
 
   const userDocRef = doc(db, 'users', userAuth.uid);
@@ -123,13 +136,13 @@ export const getDataFromUserDocument = async userAuth => {
   if (userSnapshot.exists()) return userSnapshot.data();
 };
 
-export const onAuthStateChangedListener = callback =>
+export const onAuthStateChangedListener = (callback: NextOrObserver<User>) =>
   onAuthStateChanged(auth, callback);
 
 export const signOutUser = async () => await signOut(auth);
 
 // convert an observable listener into a promise based function call
-export const getCurrentUser = () => {
+export const getCurrentUser = (): Promise<User | null> => {
   return new Promise((resolve, reject) => {
     const unsubscribe = onAuthStateChanged(
       auth,
