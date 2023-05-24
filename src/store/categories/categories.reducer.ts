@@ -23,7 +23,7 @@ export const CATEGORIES_INITIAL_STATE: CategoriesState = {
 // reducer should always store the most basic format, essentially the data you get from your API
 export const categoriesReducer = (
   state = CATEGORIES_INITIAL_STATE,
-  action = {} as AnyAction
+  action: AnyAction
 ): CategoriesState => {
   if (fetchCategoriesStart.match(action)) {
     return { ...state, isLoading: true };
