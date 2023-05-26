@@ -31,6 +31,5 @@ export type EmailSignUpData = EmailSignInData & AdditionalDetails;
 
 export type UserAuth = EmailSignUpData & {
   id: number;
-  email: string;
   createdAt: Date;
 };

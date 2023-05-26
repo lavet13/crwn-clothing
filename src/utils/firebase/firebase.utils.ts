@@ -11,6 +11,7 @@ import {
   UserCredential,
   NextOrObserver,
 } from 'firebase/auth';
+
 import {
   getFirestore,
   doc,
@@ -21,8 +22,11 @@ import {
   query,
   getDocs,
   DocumentData,
+  QueryDocumentSnapshot,
 } from 'firebase/firestore';
+
 import { Category } from '../../store/categories/categories.types';
+import { AdditionalInformation, UserData } from './fireabase.types';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyA_3-3-3c55IopVdGQxV2T1wj1f5_rcd_I',
@@ -47,9 +51,13 @@ export const signInWithGooglePopup = () =>
 
 export const db = getFirestore();
 
-export const addCollectionAndDocuments = async (
+export type ObjectToAdd = {
+  title: string;
+};
+
+export const addCollectionAndDocuments = async <T extends ObjectToAdd>(
   collectionKey: string,
-  objectsToAdd: Category[]
+  objectsToAdd: T[]
 ): Promise<void> => {
   const collectionRef = collection(db, collectionKey);
   const batch = writeBatch(db);
@@ -65,18 +73,18 @@ export const addCollectionAndDocuments = async (
 
 // Utilities functions are important because they minimize the impact that changing
 // third party libraries have on our code base
-export const getCategoriesAndDocuments = async (): Promise<DocumentData[]> => {
+export const getCategoriesAndDocuments = async (): Promise<Category[]> => {
   const collectionRef = collection(db, 'categories');
   const q = query(collectionRef);
   const querySnapshot = await getDocs(q);
 
-  return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
+  return querySnapshot.docs.map(docSnapshot => docSnapshot.data() as Category);
 };
 
 export const createUserDocumentFromAuth = async (
-  userAuth: User | null,
-  additionalInformation = {}
-) => {
+  userAuth: User,
+  additionalInformation = {} as AdditionalInformation
+): Promise<QueryDocumentSnapshot<UserData> | void> => {
   if (!userAuth) return;
 
   const userDocRef = doc(db, 'users', userAuth.uid);
@@ -98,19 +106,19 @@ export const createUserDocumentFromAuth = async (
         ...additionalInformation,
       });
 
-      return await getDoc(userDocRef);
+      return (await getDoc(userDocRef)) as QueryDocumentSnapshot<UserData>;
     } catch (error: any) {
       console.log('error creating the user', error.message);
     }
   }
 
-  return userSnapshot;
+  return userSnapshot as QueryDocumentSnapshot<UserData>;
 };
 
 export const createAuthUserWithEmailAndPassword = async (
   email: string,
   password: string
-): Promise<UserCredential | void> => {
+) => {
   if (!email || !password) return;
 
   return await createUserWithEmailAndPassword(auth, email, password);
@@ -127,13 +135,15 @@ export const signInAuthUserWithEmailAndPassword = async (
 
 export const getDataFromUserDocument = async (
   userAuth: User | null
-): Promise<DocumentData | void> => {
+): Promise<UserData | void> => {
   if (!userAuth) return;
 
   const userDocRef = doc(db, 'users', userAuth.uid);
-  const userSnapshot = await getDoc(userDocRef);
+  const userSnapshot = (await getDoc(
+    userDocRef
+  )) as QueryDocumentSnapshot<UserData>;
 
-  if (userSnapshot.exists()) return userSnapshot.data();
+  if (userSnapshot.exists()) return userSnapshot.data() as UserData;
 };
 
 export const onAuthStateChangedListener = (callback: NextOrObserver<User>) =>
