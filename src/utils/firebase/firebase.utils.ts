@@ -7,7 +7,10 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  User,
+  NextOrObserver,
 } from 'firebase/auth';
+
 import {
   getFirestore,
   doc,
@@ -17,7 +20,11 @@ import {
   writeBatch,
   query,
   getDocs,
+  DocumentSnapshot,
 } from 'firebase/firestore';
+
+import { Category } from '../../store/categories/categories.types';
+import { AdditionalInformation, UserData } from './fireabase.types';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyA_3-3-3c55IopVdGQxV2T1wj1f5_rcd_I',
@@ -42,10 +49,14 @@ export const signInWithGooglePopup = () =>
 
 export const db = getFirestore();
 
-export const addCollectionAndDocuments = async (
-  collectionKey,
-  objectsToAdd
-) => {
+export type ObjectToAdd = {
+  title: string;
+};
+
+export const addCollectionAndDocuments = async <T extends ObjectToAdd>(
+  collectionKey: string,
+  objectsToAdd: T[]
+): Promise<void> => {
   const collectionRef = collection(db, collectionKey);
   const batch = writeBatch(db);
 
@@ -60,18 +71,18 @@ export const addCollectionAndDocuments = async (
 
 // Utilities functions are important because they minimize the impact that changing
 // third party libraries have on our code base
-export const getCategoriesAndDocuments = async () => {
+export const getCategoriesAndDocuments = async (): Promise<Category[]> => {
   const collectionRef = collection(db, 'categories');
   const q = query(collectionRef);
   const querySnapshot = await getDocs(q);
 
-  return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
+  return querySnapshot.docs.map(docSnapshot => docSnapshot.data() as Category);
 };
 
 export const createUserDocumentFromAuth = async (
-  userAuth,
-  additionalInformation = {}
-) => {
+  userAuth: User,
+  additionalInformation = {} as AdditionalInformation
+): Promise<DocumentSnapshot<UserData> | void> => {
   if (!userAuth) return;
 
   const userDocRef = doc(db, 'users', userAuth.uid);
@@ -93,43 +104,51 @@ export const createUserDocumentFromAuth = async (
         ...additionalInformation,
       });
 
-      return await getDoc(userDocRef);
-    } catch (error) {
+      return (await getDoc(userDocRef)) as DocumentSnapshot<UserData>;
+    } catch (error: any) {
       console.log('error creating the user', error.message);
     }
   }
 
-  return userSnapshot;
+  return userSnapshot as DocumentSnapshot<UserData>;
 };
 
-export const createAuthUserWithEmailAndPassword = async (email, password) => {
+export const createAuthUserWithEmailAndPassword = async (
+  email: string,
+  password: string
+) => {
   if (!email || !password) return;
 
   return await createUserWithEmailAndPassword(auth, email, password);
 };
 
-export const signInAuthUserWithEmailAndPassword = async (email, password) => {
+export const signInAuthUserWithEmailAndPassword = async (
+  email: string,
+  password: string
+) => {
   if (!email || !password) return;
 
   return await signInWithEmailAndPassword(auth, email, password);
 };
 
-export const getDataFromUserDocument = async userAuth => {
+export const getDataFromUserDocument = async (
+  userAuth: User | null
+): Promise<UserData | void> => {
   if (!userAuth) return;
 
   const userDocRef = doc(db, 'users', userAuth.uid);
-  const userSnapshot = await getDoc(userDocRef);
+  const userSnapshot = (await getDoc(userDocRef)) as DocumentSnapshot<UserData>;
 
-  if (userSnapshot.exists()) return userSnapshot.data();
+  if (userSnapshot.exists()) return userSnapshot.data() as UserData;
 };
 
-export const onAuthStateChangedListener = callback =>
+export const onAuthStateChangedListener = (callback: NextOrObserver<User>) =>
   onAuthStateChanged(auth, callback);
 
 export const signOutUser = async () => await signOut(auth);
 
 // convert an observable listener into a promise based function call
-export const getCurrentUser = () => {
+export const getCurrentUser = (): Promise<User | null> => {
   return new Promise((resolve, reject) => {
     const unsubscribe = onAuthStateChanged(
       auth,
