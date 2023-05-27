@@ -8,7 +8,6 @@ import {
   signOut,
   onAuthStateChanged,
   User,
-  UserCredential,
   NextOrObserver,
 } from 'firebase/auth';
 
@@ -21,8 +20,7 @@ import {
   writeBatch,
   query,
   getDocs,
-  DocumentData,
-  QueryDocumentSnapshot,
+  DocumentSnapshot,
 } from 'firebase/firestore';
 
 import { Category } from '../../store/categories/categories.types';
@@ -84,7 +82,7 @@ export const getCategoriesAndDocuments = async (): Promise<Category[]> => {
 export const createUserDocumentFromAuth = async (
   userAuth: User,
   additionalInformation = {} as AdditionalInformation
-): Promise<QueryDocumentSnapshot<UserData> | void> => {
+): Promise<DocumentSnapshot<UserData> | void> => {
   if (!userAuth) return;
 
   const userDocRef = doc(db, 'users', userAuth.uid);
@@ -106,13 +104,13 @@ export const createUserDocumentFromAuth = async (
         ...additionalInformation,
       });
 
-      return (await getDoc(userDocRef)) as QueryDocumentSnapshot<UserData>;
+      return (await getDoc(userDocRef)) as DocumentSnapshot<UserData>;
     } catch (error: any) {
       console.log('error creating the user', error.message);
     }
   }
 
-  return userSnapshot as QueryDocumentSnapshot<UserData>;
+  return userSnapshot as DocumentSnapshot<UserData>;
 };
 
 export const createAuthUserWithEmailAndPassword = async (
@@ -127,7 +125,7 @@ export const createAuthUserWithEmailAndPassword = async (
 export const signInAuthUserWithEmailAndPassword = async (
   email: string,
   password: string
-): Promise<UserCredential | void> => {
+) => {
   if (!email || !password) return;
 
   return await signInWithEmailAndPassword(auth, email, password);
@@ -139,9 +137,7 @@ export const getDataFromUserDocument = async (
   if (!userAuth) return;
 
   const userDocRef = doc(db, 'users', userAuth.uid);
-  const userSnapshot = (await getDoc(
-    userDocRef
-  )) as QueryDocumentSnapshot<UserData>;
+  const userSnapshot = (await getDoc(userDocRef)) as DocumentSnapshot<UserData>;
 
   if (userSnapshot.exists()) return userSnapshot.data() as UserData;
 };

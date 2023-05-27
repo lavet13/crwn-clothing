@@ -14,13 +14,13 @@ export enum USER_ACTION_TYPES {
   SIGN_OUT_FAILED = 'user/SIGN_OUT_FAILED',
 }
 
+export type AdditionalDetails = {
+  displayName?: string;
+};
+
 export type EmailSignInData = {
   email: string;
   password: string;
-};
-
-export type AdditionalDetails = {
-  displayName?: string;
 };
 
 export type SignUpSuccessData = {
