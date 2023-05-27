@@ -1,4 +1,5 @@
 import { UserCredential } from 'firebase/auth';
+
 import {
   withMatcher,
   Action,
@@ -6,14 +7,15 @@ import {
 } from '../../utils/reducer/reducer.utils';
 
 import { createAction } from '../../utils/reducer/reducer.utils';
+
 import {
-  AdditionalDetails,
-  EmailSignInData,
-  EmailSignUpData,
-  SignUpSuccessData,
+  EmailSignInStartPayload,
+  SignInSuccessPayload,
+  SignUpStartPayload,
+  SignUpSuccessPayload,
   USER_ACTION_TYPES,
-  UserAuth,
 } from './user.types';
+import { AdditionalInformation } from '../../utils/firebase/fireabase.types';
 
 export type CheckUserSession = Action<USER_ACTION_TYPES.CHECK_USER_SESSION>;
 
@@ -21,12 +23,12 @@ export type GoogleSignInStart = Action<USER_ACTION_TYPES.GOOGLE_SIGN_IN_START>;
 
 export type EmailSignInStart = ActionWithPayload<
   USER_ACTION_TYPES.EMAIL_SIGN_IN_START,
-  EmailSignInData
+  EmailSignInStartPayload
 >;
 
 export type SignInSuccess = ActionWithPayload<
   USER_ACTION_TYPES.SIGN_IN_SUCCESS,
-  UserAuth
+  SignInSuccessPayload
 >;
 
 export type SignInFailed = ActionWithPayload<
@@ -36,12 +38,12 @@ export type SignInFailed = ActionWithPayload<
 
 export type SignUpStart = ActionWithPayload<
   USER_ACTION_TYPES.SIGN_UP_START,
-  EmailSignUpData
+  SignUpStartPayload
 >;
 
 export type SignUpSuccess = ActionWithPayload<
   USER_ACTION_TYPES.SIGN_UP_SUCCESS,
-  SignUpSuccessData
+  SignUpSuccessPayload
 >;
 
 export type SignUpFailed = ActionWithPayload<
@@ -72,7 +74,7 @@ export const emailSignInStart = withMatcher(
 );
 
 export const signInSuccess = withMatcher(
-  (user: UserAuth): SignInSuccess =>
+  (user: SignInSuccessPayload): SignInSuccess =>
     createAction(USER_ACTION_TYPES.SIGN_IN_SUCCESS, user)
 );
 
@@ -82,12 +84,15 @@ export const signInFailed = withMatcher(
 );
 
 export const signUpStart = withMatcher(
-  (userData: EmailSignUpData): SignUpStart =>
+  (userData: SignUpStartPayload): SignUpStart =>
     createAction(USER_ACTION_TYPES.SIGN_UP_START, userData)
 );
 
 export const signUpSuccess = withMatcher(
-  (user: UserCredential, additionalDetails: AdditionalDetails): SignUpSuccess =>
+  (
+    user: UserCredential,
+    additionalDetails: AdditionalInformation
+  ): SignUpSuccess =>
     createAction(USER_ACTION_TYPES.SIGN_UP_SUCCESS, {
       user,
       ...additionalDetails,

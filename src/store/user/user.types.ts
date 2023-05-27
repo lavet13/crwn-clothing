@@ -1,4 +1,5 @@
 import { UserCredential } from 'firebase/auth';
+import { AdditionalInformation } from '../../utils/firebase/fireabase.types';
 
 export enum USER_ACTION_TYPES {
   CHECK_USER_SESSION = 'user/CHECK_USER_SESSION',
@@ -14,22 +15,23 @@ export enum USER_ACTION_TYPES {
   SIGN_OUT_FAILED = 'user/SIGN_OUT_FAILED',
 }
 
-export type AdditionalDetails = {
-  displayName?: string;
-};
-
-export type EmailSignInData = {
+export type EmailSignInStartPayload = {
   email: string;
   password: string;
 };
 
-export type SignUpSuccessData = {
-  user: UserCredential;
-} & AdditionalDetails;
-
-export type EmailSignUpData = EmailSignInData & AdditionalDetails;
-
-export type UserAuth = EmailSignUpData & {
+export type SignInSuccessPayload = {
   id: number;
+  email: string;
+  password: string;
   createdAt: Date;
-};
+} & AdditionalInformation;
+
+export type SignUpStartPayload = {
+  email: string;
+  password: string;
+} & AdditionalInformation;
+
+export type SignUpSuccessPayload = {
+  user: UserCredential;
+} & AdditionalInformation;
