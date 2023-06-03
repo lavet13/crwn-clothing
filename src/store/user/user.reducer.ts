@@ -1,7 +1,5 @@
 import { AnyAction } from 'redux';
 
-import { SignInSuccessPayload } from './user.types';
-
 import {
   checkUserSession,
   emailSignInStart,
@@ -15,8 +13,10 @@ import {
   signUpStart,
 } from './user.action';
 
+import { UserData } from '../../utils/firebase/fireabase.types';
+
 export type UserState = {
-  readonly currentUser: SignInSuccessPayload | null;
+  readonly currentUser: UserData | null;
   readonly isLoading: boolean;
   readonly error: Error | null;
 };

@@ -1,6 +1,6 @@
 // 4 saga based effect generators; saga have redux bindings on them
 // (able to access the redux store, able to dispatch to it, we do so through these methods)
-import { takeLatest, all, call, put } from 'typed-redux-saga';
+import { takeLatest, all, call, put } from 'typed-redux-saga/macro';
 
 import { getCategoriesAndDocuments } from '../../utils/firebase/firebase.utils';
 

@@ -1,4 +1,4 @@
-import { UserCredential } from 'firebase/auth';
+import { User } from 'firebase/auth';
 import { AdditionalInformation } from '../../utils/firebase/fireabase.types';
 
 export enum USER_ACTION_TYPES {
@@ -20,18 +20,11 @@ export type EmailSignInStartPayload = {
   password: string;
 };
 
-export type SignInSuccessPayload = {
-  id: number;
-  email: string;
-  password: string;
-  createdAt: Date;
-} & AdditionalInformation;
-
 export type SignUpStartPayload = {
   email: string;
   password: string;
 } & AdditionalInformation;
 
 export type SignUpSuccessPayload = {
-  user: UserCredential;
+  user: User;
 } & AdditionalInformation;
