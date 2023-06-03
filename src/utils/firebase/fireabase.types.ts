@@ -3,7 +3,6 @@ export type AdditionalInformation = {
 };
 
 export type UserData = {
-  createdAt: Date;
-  email: string;
-  displayName?: string;
-};
+  createdAt?: Date;
+  email?: string;
+} & AdditionalInformation;
