@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import FormInput from '../form-input/form-input.component';
@@ -20,7 +20,7 @@ const SignUpForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { displayName, email, password, confirmPassword } = formFields;
 
-  const handleChange = event => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
     setFormFields({ ...formFields, [name]: value });
@@ -28,7 +28,7 @@ const SignUpForm = () => {
 
   const resetFormFields = () => setFormFields(defaultFormFields);
 
-  const handleSubmit = async event => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     // confirm that the password matches confirmPassword
@@ -79,7 +79,7 @@ const SignUpForm = () => {
           onChange={handleChange}
           name='password'
           value={password}
-          minLength='6'
+          minLength={6}
         />
 
         <FormInput
@@ -89,7 +89,7 @@ const SignUpForm = () => {
           onChange={handleChange}
           name='confirmPassword'
           value={confirmPassword}
-          minLength='6'
+          minLength={6}
         />
 
         <Button type='submit'>Sign Up</Button>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import {
@@ -23,7 +23,7 @@ const SignInForm = () => {
 
   const resetFormFields = () => setFormFields(defaultFormFields);
 
-  const handleChange = event => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
     setFormFields({ ...formFields, [name]: value });
@@ -47,7 +47,7 @@ const SignInForm = () => {
     // }
   };
 
-  const handleSubmit = async event => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     dispatch(emailSignInStart(email, password));
@@ -90,7 +90,7 @@ const SignInForm = () => {
           name='password'
           value={password}
           onChange={handleChange}
-          minLength='6'
+          minLength={6}
         />
 
         <ButtonsContainer>
