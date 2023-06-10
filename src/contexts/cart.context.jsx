@@ -1,6 +1,8 @@
 import { createContext, useReducer } from 'react';
 
 import { createAction } from '../utils/reducer/reducer.utils';
+import { produce } from 'immer';
+import { useImmerReducer } from 'use-immer';
 
 const addCartItem = (cartItems, productToAdd) => {
   const existingCartItem = cartItems.find(
@@ -60,14 +62,18 @@ const CART_INITIAL_STATE = {
   cartIsOpen: false,
 };
 
-const cartReducer = (state, action) => {
+const cartReducer = (draft, action) => {
   const { type, payload } = action;
 
   switch (type) {
     case CART_ACTION_TYPES.SET_CART_ITEMS:
-      return { ...state, ...payload };
+      draft.cartItems = payload.cartItems;
+      draft.cartTotal = payload.cartTotal;
+      draft.cartCount = payload.cartCount;
+      return;
     case CART_ACTION_TYPES.SET_CART_IS_OPEN:
-      return { ...state, cartIsOpen: payload };
+      draft.cartIsOpen = payload;
+      return;
     default:
       throw new Error(`Unhandled type of ${type} in cartReducer`);
   }
@@ -75,7 +81,7 @@ const cartReducer = (state, action) => {
 
 export const CartProvider = ({ children }) => {
   const [{ cartItems, cartIsOpen, cartTotal, cartCount }, dispatch] =
-    useReducer(cartReducer, CART_INITIAL_STATE);
+    useImmerReducer(cartReducer, CART_INITIAL_STATE);
 
   const updateCartItemsReducer = newCartItems => {
     const newCartCount = newCartItems.reduce(
