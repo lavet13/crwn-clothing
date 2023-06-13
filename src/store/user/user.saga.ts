@@ -1,4 +1,12 @@
-import { takeLatest, call, all, put } from 'typed-redux-saga/macro';
+import {
+  takeLatest,
+  call,
+  all,
+  put,
+  take,
+  fork,
+  cancel,
+} from 'typed-redux-saga/macro';
 
 import { USER_ACTION_TYPES } from './user.types';
 
@@ -125,7 +133,17 @@ export function* signOut() {
 }
 
 export function* onCheckUserSession() {
-  yield* takeLatest(USER_ACTION_TYPES.CHECK_USER_SESSION, isUserAuthenticated);
+  let lastTask;
+
+  while (true) {
+    yield* take(USER_ACTION_TYPES.CHECK_USER_SESSION);
+    if (lastTask) {
+      yield* cancel(lastTask);
+    }
+
+    lastTask = yield* fork(isUserAuthenticated);
+  }
+  // yield* takeLatest(USER_ACTION_TYPES.CHECK_USER_SESSION, isUserAuthenticated);
 }
 
 export function* onGoogleSignInStart() {
