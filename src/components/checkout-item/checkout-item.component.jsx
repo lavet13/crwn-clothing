@@ -1,11 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectCartItems } from '../../store/cart/cart.selector';
+import { selectCartItems, selectUndoIds } from '../../store/cart/cart.selector';
 
 import {
   addItemToCart,
   removeItemFromCart,
-  clearItemFromCart,
+  undoClearFromCart,
+  undoClearing,
 } from '../../store/cart/cart.action';
 
 import {
@@ -19,9 +20,11 @@ import {
 } from './checkout-item.styles';
 
 const CheckoutItem = ({ cartItem }) => {
-  const { name, imageUrl, quantity, price } = cartItem;
+  const { id, name, imageUrl, quantity, price } = cartItem;
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCartItems);
+  const undoIds = useSelector(selectUndoIds);
+  console.log(undoIds);
 
   // two purposes of why we are creating outside handlers rather
   // than putting these anynomous functions directly into these onClick areas:
@@ -29,11 +32,11 @@ const CheckoutItem = ({ cartItem }) => {
   // being inside of our jsx, there are in a place where we know we instantiate and initialize all of our helper functions
   // and anything like that it's just for code clarity, so it's easy to update these if need be
   // 2) By doing this we actually be able to optimize this code (we'll talk about that later)
-  const clearItemHandler = () =>
-    dispatch(clearItemFromCart(cartItems, cartItem));
+  const clearItemHandler = () => dispatch(undoClearFromCart(id, cartItem));
   const addItemHandler = () => dispatch(addItemToCart(cartItems, cartItem));
   const removeItemHandler = () =>
     dispatch(removeItemFromCart(cartItems, cartItem));
+  const undoClearingHandler = () => dispatch(undoClearing(id));
 
   return (
     <CheckoutItemContainer>
@@ -47,7 +50,12 @@ const CheckoutItem = ({ cartItem }) => {
         <Arrow onClick={addItemHandler}>&#10095;</Arrow>
       </Quantity>
       <BaseSpan>{price}</BaseSpan>
-      <RemoveButton onClick={clearItemHandler}>&#10005;</RemoveButton>
+
+      {undoIds.includes(id) ? (
+        <RemoveButton onClick={undoClearingHandler}>Undo</RemoveButton>
+      ) : (
+        <RemoveButton onClick={clearItemHandler}>&#10005;</RemoveButton>
+      )}
     </CheckoutItemContainer>
   );
 };

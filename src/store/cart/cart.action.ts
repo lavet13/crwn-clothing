@@ -44,12 +44,6 @@ const removeCartItem = (
   );
 };
 
-const clearCartItem = (
-  cartItems: CartItem[],
-  cartItemToClear: CartItem
-): CartItem[] =>
-  cartItems.filter(cartItem => cartItem.id !== cartItemToClear.id);
-
 export type SetCartItems = ActionWithPayload<
   CART_ACTION_TYPES.SET_CART_ITEMS,
   CartItem[]
@@ -58,6 +52,31 @@ export type SetCartItems = ActionWithPayload<
 export type SetIsCartOpen = ActionWithPayload<
   CART_ACTION_TYPES.SET_IS_CART_OPEN,
   boolean
+>;
+
+export type UndoClearFromCart = ActionWithPayload<
+  CART_ACTION_TYPES.UNDO_CLEAR,
+  { id: string; cartItemToClear: CartItem }
+>;
+
+export type ShowUndo = ActionWithPayload<
+  CART_ACTION_TYPES.SHOW_UNDO,
+  { id: string }
+>;
+
+export type HideUndo = ActionWithPayload<
+  CART_ACTION_TYPES.HIDE_UNDO,
+  { id: string }
+>;
+
+export type UndoClearing = ActionWithPayload<
+  CART_ACTION_TYPES.UNDO,
+  { undoId: string }
+>;
+
+export type ClearItemFromCart = ActionWithPayload<
+  CART_ACTION_TYPES.CLEAR_CART_ITEM,
+  CartItem
 >;
 
 export const setIsCartOpen = withMatcher(
@@ -70,13 +89,31 @@ export const setCartItems = withMatcher(
     createAction(CART_ACTION_TYPES.SET_CART_ITEMS, cartItems)
 );
 
-export const clearItemFromCart = (
-  cartItems: CartItem[],
-  cartItemToClear: CartItem
-) => {
-  const newCartItems = clearCartItem(cartItems, cartItemToClear);
-  return setCartItems(newCartItems);
-};
+export const clearItemFromCart = withMatcher(
+  (cartItemToClear: CartItem): ClearItemFromCart =>
+    createAction(CART_ACTION_TYPES.CLEAR_CART_ITEM, cartItemToClear)
+);
+
+export const undoClearFromCart = withMatcher(
+  (id: string, cartItemToClear: CartItem): UndoClearFromCart =>
+    createAction(CART_ACTION_TYPES.UNDO_CLEAR, {
+      id,
+      cartItemToClear,
+    })
+);
+
+export const showUndo = withMatcher(
+  (id: string): ShowUndo => createAction(CART_ACTION_TYPES.SHOW_UNDO, { id })
+);
+
+export const hideUndo = withMatcher(
+  (id: string): HideUndo => createAction(CART_ACTION_TYPES.HIDE_UNDO, { id })
+);
+
+export const undoClearing = withMatcher(
+  (undoId: string): UndoClearing =>
+    createAction(CART_ACTION_TYPES.UNDO, { undoId })
+);
 
 export const removeItemFromCart = (
   cartItems: CartItem[],

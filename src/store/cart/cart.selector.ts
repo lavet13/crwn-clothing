@@ -17,6 +17,11 @@ export const selectIsCartOpen = createSelector(
   cart => cart.isCartOpen
 );
 
+export const selectUndoIds = createSelector(
+  [selectCartReducer],
+  cart => cart.undoId
+);
+
 export const selectCartTotal = createSelector(
   [selectCartItems],
   (cartItems): number =>
