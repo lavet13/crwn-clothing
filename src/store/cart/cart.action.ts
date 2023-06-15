@@ -56,22 +56,22 @@ export type SetIsCartOpen = ActionWithPayload<
 
 export type UndoClearFromCart = ActionWithPayload<
   CART_ACTION_TYPES.UNDO_CLEAR,
-  { id: string; cartItemToClear: CartItem }
+  { id: number; cartItemToClear: CartItem }
 >;
 
 export type ShowUndo = ActionWithPayload<
   CART_ACTION_TYPES.SHOW_UNDO,
-  { id: string }
+  { id: number }
 >;
 
 export type HideUndo = ActionWithPayload<
   CART_ACTION_TYPES.HIDE_UNDO,
-  { id: string }
+  { id: number }
 >;
 
 export type UndoClearing = ActionWithPayload<
   CART_ACTION_TYPES.UNDO,
-  { undoId: string }
+  { undoId: number }
 >;
 
 export type ClearItemFromCart = ActionWithPayload<
@@ -95,7 +95,7 @@ export const clearItemFromCart = withMatcher(
 );
 
 export const undoClearFromCart = withMatcher(
-  (id: string, cartItemToClear: CartItem): UndoClearFromCart =>
+  (id: number, cartItemToClear: CartItem): UndoClearFromCart =>
     createAction(CART_ACTION_TYPES.UNDO_CLEAR, {
       id,
       cartItemToClear,
@@ -103,15 +103,15 @@ export const undoClearFromCart = withMatcher(
 );
 
 export const showUndo = withMatcher(
-  (id: string): ShowUndo => createAction(CART_ACTION_TYPES.SHOW_UNDO, { id })
+  (id: number): ShowUndo => createAction(CART_ACTION_TYPES.SHOW_UNDO, { id })
 );
 
 export const hideUndo = withMatcher(
-  (id: string): HideUndo => createAction(CART_ACTION_TYPES.HIDE_UNDO, { id })
+  (id: number): HideUndo => createAction(CART_ACTION_TYPES.HIDE_UNDO, { id })
 );
 
 export const undoClearing = withMatcher(
-  (undoId: string): UndoClearing =>
+  (undoId: number): UndoClearing =>
     createAction(CART_ACTION_TYPES.UNDO, { undoId })
 );
 

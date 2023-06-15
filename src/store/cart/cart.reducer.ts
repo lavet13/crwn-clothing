@@ -12,7 +12,7 @@ import {
 export type CartState = {
   readonly cartItems: CartItem[];
   readonly isCartOpen: boolean;
-  readonly undoId: string[];
+  readonly undoId: number[];
 };
 
 export const CART_INITIAL_STATE: CartState = {

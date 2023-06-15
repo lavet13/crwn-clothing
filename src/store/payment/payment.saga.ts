@@ -1,4 +1,4 @@
-import { call, all, put, takeLatest } from 'redux-saga/effects';
+import { call, all, put, takeLatest } from 'typed-redux-saga/macro';
 
 import { PAYMENT_ACTION_TYPES } from './payment.types';
 import {
@@ -6,9 +6,13 @@ import {
   paymentRequestFailed,
   cardPaymentSuccess,
   cardPaymentFailed,
+  CheckPaymentRequest,
+  CardPaymentStart,
 } from './payment.action';
 
-export function* isActivePayment({ payload: { stripe, amount } }) {
+export function* isActivePayment({
+  payload: { stripe, amount },
+}: CheckPaymentRequest) {
   try {
     const pr = stripe.paymentRequest({
       country: 'US',
@@ -21,26 +25,26 @@ export function* isActivePayment({ payload: { stripe, amount } }) {
       requestPayerName: true,
     });
 
-    const result = yield call(pr.canMakePayment);
+    const result = yield* call(pr.canMakePayment);
 
-    console.log(result);
+    yield* call(console.log, result);
 
     if (result) {
-      yield put(paymentRequestSuccess(pr));
+      yield* put(paymentRequestSuccess(pr));
     }
-  } catch (error) {
-    yield put(paymentRequestFailed(error));
+  } catch (error: any) {
+    yield* put(paymentRequestFailed(error));
   }
 }
 
 export function* payWithCard({
   payload: { stripe, elements, CardElement, amount, address },
-}) {
+}: CardPaymentStart) {
   try {
     // @INCOMPLETE: try to use axios instead
     // https://stackoverflow.com/questions/40007935/how-to-handle-errors-in-fetch-responses-with-redux-saga
     // https://stripe.com/docs/stripe-js/elements/payment-request-button?client=react#react-mount-element
-    const response = yield call(
+    const response = yield* call(
       fetch,
       '/.netlify/functions/create-payment-intent',
       {
@@ -54,11 +58,11 @@ export function* payWithCard({
     if (!(response.status >= 200 && response.status < 300) || !response.ok)
       throw response;
 
-    const responseData = yield response.json();
+    const responseData = yield* call([response, response.json]);
 
     const clientSecret = responseData.paymentIntent.client_secret;
 
-    const paymentResult = yield call(stripe.confirmCardPayment, clientSecret, {
+    const paymentResult = yield* call(stripe.confirmCardPayment, clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement),
         billing_details: {
