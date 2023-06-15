@@ -9,6 +9,7 @@ import {
   CheckPaymentRequest,
   CardPaymentStart,
 } from './payment.action';
+import { ConfirmCardPaymentData, PaymentIntent } from '@stripe/stripe-js';
 
 export function* isActivePayment({
   payload: { stripe, amount },
@@ -58,39 +59,50 @@ export function* payWithCard({
     if (!(response.status >= 200 && response.status < 300) || !response.ok)
       throw response;
 
-    const responseData = yield* call([response, response.json]);
+    const responseData: { paymentIntent: PaymentIntent } = yield* call([
+      response,
+      response.json,
+    ]);
 
     const clientSecret = responseData.paymentIntent.client_secret;
+    if (!clientSecret) return;
 
-    const paymentResult = yield* call(stripe.confirmCardPayment, clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardElement),
-        billing_details: {
-          ...address,
+    const paymentResult = yield* call(
+      [stripe, stripe.confirmCardPayment],
+      clientSecret,
+      {
+        payment_method: {
+          card: elements.getElement(CardElement),
+          billing_details: {
+            ...address,
+          },
         },
-      },
-    });
+      } as ConfirmCardPaymentData
+    );
 
     if (paymentResult.error) {
       const { message } = paymentResult.error;
 
-      yield put(cardPaymentFailed(message));
+      yield* put(cardPaymentFailed(message));
     } else {
-      yield put(cardPaymentSuccess(paymentResult.paymentIntent.status));
+      yield* put(cardPaymentSuccess(paymentResult.paymentIntent.status));
     }
-  } catch (error) {
-    yield put(cardPaymentFailed(error));
+  } catch (error: any) {
+    yield* put(cardPaymentFailed(error));
   }
 }
 
 export function* onCheckPaymentRequest() {
-  yield takeLatest(PAYMENT_ACTION_TYPES.CHECK_PAYMENT_REQUEST, isActivePayment);
+  yield* takeLatest(
+    PAYMENT_ACTION_TYPES.CHECK_PAYMENT_REQUEST,
+    isActivePayment
+  );
 }
 
 export function* onCardPaymentStart() {
-  yield takeLatest(PAYMENT_ACTION_TYPES.CARD_PAYMENT_START, payWithCard);
+  yield* takeLatest(PAYMENT_ACTION_TYPES.CARD_PAYMENT_START, payWithCard);
 }
 
 export function* paymentSagas() {
-  yield all([call(onCheckPaymentRequest), call(onCardPaymentStart)]);
+  yield* all([call(onCheckPaymentRequest), call(onCardPaymentStart)]);
 }

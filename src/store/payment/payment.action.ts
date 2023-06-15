@@ -4,7 +4,12 @@ import {
   withMatcher,
   ActionWithPayload,
 } from '../../utils/reducer/reducer.utils';
-import { PaymentRequest, Stripe, StripeElements } from '@stripe/stripe-js';
+import {
+  PaymentIntent,
+  PaymentRequest,
+  Stripe,
+  StripeElements,
+} from '@stripe/stripe-js';
 import { CardElementComponent } from '@stripe/react-stripe-js';
 import { DefaultAddressFields } from '../../components/payment-form/payment-form.component';
 
@@ -34,8 +39,15 @@ export type CardPaymentStart = ActionWithPayload<
   }
 >;
 
-export type CardPaymentSuccess =
-  ActionWithPayload<PAYMENT_ACTION_TYPES.CARD_PAYMENT_SUCCESS>;
+export type CardPaymentSuccess = ActionWithPayload<
+  PAYMENT_ACTION_TYPES.CARD_PAYMENT_SUCCESS,
+  PaymentIntent.Status
+>;
+
+export type CardPaymentFailed = ActionWithPayload<
+  PAYMENT_ACTION_TYPES.CARD_PAYMENT_FAILED,
+  string | undefined
+>;
 
 export const checkPaymentRequest = withMatcher(
   (stripe: Stripe, amount: number): CheckPaymentRequest =>
@@ -69,8 +81,12 @@ export const cardPaymentStart = withMatcher(
     })
 );
 
-export const cardPaymentSuccess = status =>
-  createAction(PAYMENT_ACTION_TYPES.CARD_PAYMENT_SUCCESS, status);
+export const cardPaymentSuccess = withMatcher(
+  (status: PaymentIntent.Status): CardPaymentSuccess =>
+    createAction(PAYMENT_ACTION_TYPES.CARD_PAYMENT_SUCCESS, status)
+);
 
-export const cardPaymentFailed = error =>
-  createAction(PAYMENT_ACTION_TYPES.CARD_PAYMENT_FAILED, error);
+export const cardPaymentFailed = withMatcher(
+  (error?: string): CardPaymentFailed =>
+    createAction(PAYMENT_ACTION_TYPES.CARD_PAYMENT_FAILED, error)
+);
