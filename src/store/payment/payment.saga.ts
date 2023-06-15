@@ -9,7 +9,11 @@ import {
   CheckPaymentRequest,
   CardPaymentStart,
 } from './payment.action';
-import { ConfirmCardPaymentData, PaymentIntent } from '@stripe/stripe-js';
+import {
+  ConfirmCardPaymentData,
+  PaymentIntent,
+  StripeCardElement,
+} from '@stripe/stripe-js';
 
 export function* isActivePayment({
   payload: { stripe, amount },
@@ -37,6 +41,10 @@ export function* isActivePayment({
     yield* put(paymentRequestFailed(error));
   }
 }
+
+const ifValidCardElement = (
+  card: StripeCardElement | null
+): card is StripeCardElement => card !== null;
 
 export function* payWithCard({
   payload: { stripe, elements, CardElement, amount, address },
@@ -67,17 +75,23 @@ export function* payWithCard({
     const clientSecret = responseData.paymentIntent.client_secret;
     if (!clientSecret) return;
 
+    const cardDetails = elements.getElement(CardElement);
+
+    if (!ifValidCardElement(cardDetails)) return;
+
+    const paymentData: ConfirmCardPaymentData = {
+      payment_method: {
+        card: cardDetails,
+        billing_details: {
+          ...address,
+        },
+      },
+    };
+
     const paymentResult = yield* call(
       [stripe, stripe.confirmCardPayment],
       clientSecret,
-      {
-        payment_method: {
-          card: elements.getElement(CardElement),
-          billing_details: {
-            ...address,
-          },
-        },
-      } as ConfirmCardPaymentData
+      paymentData
     );
 
     if (paymentResult.error) {

@@ -33,7 +33,7 @@ export type DefaultAddressFields = {
     city: string;
     country: string;
     line1: string;
-    line2: string | null;
+    line2: string | undefined;
     postal_code: string;
     state: string;
   };
@@ -45,7 +45,7 @@ const defaultAddressFields: DefaultAddressFields = {
     city: '',
     country: 'RU',
     line1: '',
-    line2: null,
+    line2: undefined,
     postal_code: '',
     state: '',
   },
@@ -59,7 +59,7 @@ const PaymentForm = () => {
   const paymentRequestErrorMessage = useSelector(selectPaymentRequestError);
   const amount = useSelector(selectCartTotal);
   const isProcessingPayment = useSelector(selectPaymentIsLoading);
-  const stripe = useStripe(); // to make requests in the format that Stripe needs it to be
+  const stripe = useStripe();
   const elements = useElements();
 
   const paymentHandler = async (event: FormEvent<HTMLFormElement>) => {

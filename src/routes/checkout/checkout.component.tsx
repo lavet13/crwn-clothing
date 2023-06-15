@@ -48,7 +48,7 @@ const Checkout = () => {
           <PaymentForm />
         </Fragment>
       ) : (
-        <Total style={{ textAlign: 'center' }}>
+        <Total style={{ textAlign: 'center', marginRight: 'auto' }}>
           No products to be found.
           <br /> Add a new one!
         </Total>
