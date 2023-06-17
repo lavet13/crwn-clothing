@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { AuthError, AuthErrorCodes } from 'firebase/auth';
 import { useDispatch } from 'react-redux';
 
 import FormInput from '../form-input/form-input.component';
@@ -20,7 +21,7 @@ const SignUpForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { displayName, email, password, confirmPassword } = formFields;
 
-  const handleChange = event => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
     setFormFields({ ...formFields, [name]: value });
@@ -28,7 +29,7 @@ const SignUpForm = () => {
 
   const resetFormFields = () => setFormFields(defaultFormFields);
 
-  const handleSubmit = async event => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     // confirm that the password matches confirmPassword
@@ -37,15 +38,20 @@ const SignUpForm = () => {
       return;
     }
 
-    dispatch(signUpStart({ email, password, displayName }));
+    try {
+      dispatch(signUpStart({ email, password, displayName }));
 
-    // clear fields
-    resetFormFields();
-    //   if (error.code === 'auth/email-already-in-use') {
-    //     alert('Cannot create user, email already in use');
-    //   } else {
-    //     console.log('User creation encountered an error', error);
-    //   }
+      // clear fields
+      resetFormFields();
+    } catch (error) {
+      switch ((error as AuthError).code) {
+        case AuthErrorCodes.EMAIL_EXISTS:
+          alert('Cannot create user, email already in use');
+          break;
+        default:
+          console.log('User creation encountered an error', error);
+      }
+    }
   };
 
   return (
@@ -79,7 +85,7 @@ const SignUpForm = () => {
           onChange={handleChange}
           name='password'
           value={password}
-          minLength='6'
+          minLength={6}
         />
 
         <FormInput
@@ -89,7 +95,7 @@ const SignUpForm = () => {
           onChange={handleChange}
           name='confirmPassword'
           value={confirmPassword}
-          minLength='6'
+          minLength={6}
         />
 
         <Button type='submit'>Sign Up</Button>

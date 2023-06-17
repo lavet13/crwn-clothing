@@ -3,8 +3,9 @@ import { Fragment } from 'react';
 import { CardElement } from '@stripe/react-stripe-js';
 
 import { CardSectionContainer } from './card-section.styles';
+import { StripeCardElementOptions } from '@stripe/stripe-js';
 
-const CARD_ELEMENT_OPTIONS = {
+const CARD_ELEMENT_OPTIONS: StripeCardElementOptions = {
   style: {
     base: {
       color: '#32325d',

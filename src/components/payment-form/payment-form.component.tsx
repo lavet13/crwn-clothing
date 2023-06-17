@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import {
@@ -25,14 +25,27 @@ import CardSection from '../card-section/card-section.component';
 
 import { PaymentFormContainer, FormContainer } from './payment-form.styles';
 import AddressSection from '../address-section/address-section.component';
+import { StripeAddressElementChangeEvent } from '@stripe/stripe-js';
 
-const defaultAddressFields = {
+export type DefaultAddressFields = {
+  name: string;
+  address: {
+    city: string;
+    country: string;
+    line1: string;
+    line2: string | undefined;
+    postal_code: string;
+    state: string;
+  };
+};
+
+const defaultAddressFields: DefaultAddressFields = {
   name: '',
   address: {
     city: '',
     country: 'RU',
     line1: '',
-    line2: null,
+    line2: undefined,
     postal_code: '',
     state: '',
   },
@@ -46,10 +59,10 @@ const PaymentForm = () => {
   const paymentRequestErrorMessage = useSelector(selectPaymentRequestError);
   const amount = useSelector(selectCartTotal);
   const isProcessingPayment = useSelector(selectPaymentIsLoading);
-  const stripe = useStripe(); // to make requests in the format that Stripe needs it to be
+  const stripe = useStripe();
   const elements = useElements();
 
-  const paymentHandler = async event => {
+  const paymentHandler = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log(isAddressComplete);
     if (!isAddressComplete) return alert("Address isn't complete");
@@ -62,8 +75,8 @@ const PaymentForm = () => {
     );
   };
 
-  const addressChangeHandler = event => {
-    setAddressState(event.value);
+  const addressChangeHandler = (event: StripeAddressElementChangeEvent) => {
+    setAddressState(event.value as typeof addressState);
     setIsAddressComplete(event.complete);
   };
 
@@ -88,7 +101,9 @@ const PaymentForm = () => {
         {paymentRequest && (
           <PaymentRequestButtonElement options={{ paymentRequest }} />
         )}
-        {paymentRequestErrorMessage && <p>{paymentRequestErrorMessage}</p>}
+        {paymentRequestErrorMessage && (
+          <p>{paymentRequestErrorMessage.message}</p>
+        )}
       </FormContainer>
     </PaymentFormContainer>
   );
